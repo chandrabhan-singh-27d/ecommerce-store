@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
+import logo from "../assets/logo/svg/logo-no-background.svg";
 
 const NavBar = () => {
     //Navigation items
@@ -26,7 +27,10 @@ const NavBar = () => {
     return (
         <>
             <header>
-                <nav>
+                <nav className="flex ">
+                    <div className="w-[12%] h-[12%] mt-3">
+                        <img src={logo} alt="logo" />
+                    </div>
                     <ul>
                         {navItems.map(navItem => (
                             <NavLink to={navItem.link} key={navItem.title}>{navItem.title}</NavLink>
@@ -35,9 +39,6 @@ const NavBar = () => {
                 </nav>
 
             </header>
-            <main>
-                <Outlet />
-            </main>
         </>
     );
 }
