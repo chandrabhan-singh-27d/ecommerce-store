@@ -1,53 +1,48 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from "dotenv/config";
-import {connectToDB, getDB } from './db.js';
+import dotenv from "dotenv";
+import morgan from 'morgan';
+import connectToDB from '#config/db.js';
 
+//configurations
+dotenv.config();
+connectToDB();
+
+
+//initializations
 const app = express();
-
 const port = process.env.PORT || 5000;
 
+//middlewares
 app.use(cors());
 app.use(express.json());
+app.use(morgan('dev'))
 
+
+app.listen(port, () => {
+    console.log(`server is running in ${process.env.MODE} mode on port: ${port}`);
+});
+
+app.get('/', (req, res) => {
+    res.send(`Hello and welcome`)
+})
+
+/* 
+// connect to db without mongoose
 let db;
-// app.use(require("./routes/record"));
-// get driver connection
-// const dbo = require("./db/conn");
 
 connectToDB((err) => {
     if(!err) {
         app.listen(port, () => {
-            // perform a database connection when server starts
+            // perform a database connection when app starts
             
-            //: ${port} dbo.connectToServer(function (err) {
+            //: ${port} dbo.connectToapp(function (err) {
             //     if (err) console.error(err);
             // });
-            console.log(`Server is running on port: ${port}`);
+            console.log(`server is running in ${process.env.MODE} mode on port: ${port}`);
         });
         db = getDB();
     }
-})
+}) 
 
-
-
-
-
-app.get('/', (req, res) => {
-    let users = [];
-
-    db.collection('collection1')
-        .find()
-        .project({_id: 0})
-        .sort({name: 1})
-        .forEach(user => users.push(user))
-        .then(() => {
-            res.status(200).json(users)
-        })
-        .catch(() => {
-            res.status(500).json({
-                error: "Could not fetch the users"
-            })
-        })
-    
-})
+*/
