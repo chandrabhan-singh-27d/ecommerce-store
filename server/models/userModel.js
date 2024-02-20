@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 
 const userSchema = new Schema({
     name: {
@@ -24,9 +24,9 @@ const userSchema = new Schema({
         required: true
     },
     role: {
-
+        type: Number,
+        default: 0
     }
+}, { timestamps: true })
 
-})
-
-export default userSchema;
+export default model('users', userSchema);

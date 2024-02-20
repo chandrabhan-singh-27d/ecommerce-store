@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from "dotenv";
 import morgan from 'morgan';
 import connectToDB from '#config/db.js';
+import authRoutes from '#routes/authRoute.js'
 
 //configurations
 dotenv.config();
@@ -22,6 +23,9 @@ app.use(morgan('dev'))
 app.listen(port, () => {
     console.log(`server is running in ${process.env.MODE} mode on port: ${port}`);
 });
+
+// routes
+app.use('/api/v1/auth', authRoutes);
 
 app.get('/', (req, res) => {
     res.send(`Hello and welcome`)
