@@ -43,7 +43,7 @@ const NavBar = () => {
             <nav className="w-1/3">
                 <ul className="flex gap-4 justify-between">
                     {navItems.map(navItem => (
-                        <NavLink className={'text-lg text-primary_text'} to={navItem.link} key={navItem.title}>{navItem.title}</NavLink>
+                        <NavLink className={'text-lg text-primary_color'} to={navItem.link} key={navItem.title}>{navItem.title}</NavLink>
                     ))}
                 </ul>
             </nav>
@@ -54,9 +54,9 @@ const NavBar = () => {
                 </div>
                 <IconContext.Provider value={{ className: "cursor-pointer", size: 20 }}>
                     <>
-                        <FaRegUserCircle />
-                        <FaRegHeart />
-                        <HiOutlineShoppingBag />
+                        <FaRegHeart className="text-primary_color" />
+                        <HiOutlineShoppingBag className="text-primary_color" />
+                        <FaRegUserCircle className="text-primary_color" />
                     </>
                 </IconContext.Provider>
 
