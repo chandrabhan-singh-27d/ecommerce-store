@@ -9,6 +9,7 @@ const UserRegister = ({ openModal, closeModal }) => {
     const [userPhone, setUserPhone] = useState("");
     const [userAddress, setUserAddress] = useState("");
 
+    /* Address to call api request */
     const API_ENDPOINT = import.meta.env.VITE_API;
 
     /* Initialize Modal ref */
@@ -19,16 +20,20 @@ const UserRegister = ({ openModal, closeModal }) => {
         if (openModal) {
             registerModal.current?.showModal()
         } else {
+            /* Reset user variables */
             setUserName("");
             setUserEmail("");
             setUserPassword("");
             setUserConfPassword("");
             setUserPhone("");
             setUserAddress("");
+
+            /* Close register modal */
             registerModal.current?.close()
         }
     }, [openModal])
 
+    /* Request body object */
     const user = {
         name: userName,
         email: userEmail,
@@ -37,14 +42,12 @@ const UserRegister = ({ openModal, closeModal }) => {
         address: userAddress
     };
 
-    useEffect(() => {
-
-    })
+    /* Register form submit handler */
     const handleRegistrationSubmit = async (e) => {
         e.preventDefault();
         
         if (userPassword !== userConfPassword) {
-            alert("Password and confirm password does not matches")
+            alert("Password and confirm password does not match")
             return;
         }
 
@@ -56,11 +59,11 @@ const UserRegister = ({ openModal, closeModal }) => {
                 },
                 body: JSON.stringify(user)
             });
-            const resData = await response.json();
+            const {resData} = await response.json();
             
             if(resData.success) {
                 registerModal.current?.close();
-                alert(resData.message);
+                alert(resData.message); //alternatively we can use toast to show the message in a clean way
             }
         } catch (error) {
             console.log("registation error", error)

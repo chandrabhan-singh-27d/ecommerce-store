@@ -5,22 +5,56 @@ const UserLogin = ({ openModal, closeModal }) => {
     const [userPassword, setUserPassword] = useState("");
     const loginModal = useRef();
 
+    /* Address to call api request */
+    const API_ENDPOINT = import.meta.env.VITE_API;
+
     useEffect(() => {
         if (openModal) {
             loginModal.current?.showModal()
         } else {
+            /* Reset Login variables */
             setUserEmail("")
             setUserPassword("")
+
+            /* Close login modal */
             loginModal.current?.close()
         }
     }, [openModal])
 
+    /* Request body object */
+    const user = {
+        email: userEmail,
+        password: userPassword
+    }
+
+    const handleUserLogin = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch(`${API_ENDPOINT}/api/v1/auth/login`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(user)
+            })
+            const resData = await response.json();
+
+            if (resData.success) {
+                /* Close login modal */
+                loginModal.current?.close();
+                alert(resData.message);
+            }
+        } catch (error) {
+            console.log("error in login", error);
+        }
+    }
 
     return (
-        <dialog 
-        ref={loginModal} 
-        className="border rounded-xl box-border shadow-lg border-gray-500 p-3 backdrop:bg-black/60" 
-        onCancel={closeModal}
+        <dialog
+            ref={loginModal}
+            className="border rounded-xl box-border shadow-lg border-gray-500 p-3 backdrop:bg-black/60"
+            onCancel={closeModal}
         >
             <div className="flex justify-end">
                 <button onClick={closeModal} className="hover:bg-gray-100 hover:rounded-md p-2">
@@ -88,7 +122,7 @@ const UserLogin = ({ openModal, closeModal }) => {
                 OR
                 <div className="h-px w-full bg-slate-200" />
             </div> */}
-            <form className="max-w-sm mx-auto flex flex-col justify-center pb-2 px-5">
+            <form className="max-w-sm mx-auto flex flex-col justify-center pb-2 px-5" onSubmit={handleUserLogin}>
                 <div className="mb-5">
                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Email</label>
                     <input
