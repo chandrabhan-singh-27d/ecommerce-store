@@ -157,7 +157,7 @@ const UserLogin = ({ openModal, closeModal }) => {
                     className="text-white bg-primary_color hover:bg-primary_hover focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Submit</button>
             </form>
             <div className="mt-6 text-center text-sm text-slate-600">
-                Don't have an account?
+                Don't have an account? &nbsp;
                 <a href="/signup" className="font-medium text-[#4285f4]">
                     Sign up
                 </a>
