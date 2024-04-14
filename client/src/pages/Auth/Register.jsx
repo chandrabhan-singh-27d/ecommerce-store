@@ -28,7 +28,6 @@ const UserRegister = ({ openModal, closeModal }) => {
             setUserPhone("");
             setUserAddress("");
 
-            /* checking the git user */
             /* Close register modal */
             registerModal.current?.close()
         }
