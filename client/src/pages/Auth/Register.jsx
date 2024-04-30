@@ -74,7 +74,7 @@ const UserRegister = ({ openModal, closeModal }) => {
     return (
         <dialog
             ref={registerModal}
-            className="border rounded-xl box-border shadow-lg border-gray-500 p-3 backdrop:bg-black/60"
+            className="w-1/4 border rounded-xl box-border shadow-lg border-gray-500 p-3 backdrop:bg-black/60"
             onCancel={closeModal}
         >
             <div className="flex justify-end">
@@ -141,12 +141,13 @@ const UserRegister = ({ openModal, closeModal }) => {
                 <div className="h-px w-full bg-slate-200" />
             </div> */}
 
-            <form className="max-w-sm mx-auto flex flex-col justify-center pb-2 px-5" onSubmit={handleRegistrationSubmit}>
+            <form id="register-form" className="max-w-sm mx-auto flex flex-col justify-center pb-2 px-5" onSubmit={handleRegistrationSubmit}>
                 <div className="mb-3">
-                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">Name</label>
+                    <label htmlFor="name" name="name" className="block mb-2 text-sm font-medium text-gray-900">Name</label>
                     <input
                         type="text"
                         id="name"
+                        name="name"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Please enter your name"
                         required
                         value={userName}
