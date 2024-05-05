@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import morgan from 'morgan';
 import connectToDB from '#config/db.js';
 import authRoutes from '#routes/authRoute.js'
+import categoryRoutes from '#routes/categoryRoutes.js'
 
 //configurations
 dotenv.config();
@@ -26,10 +27,8 @@ app.listen(port, () => {
 
 // routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/category', categoryRoutes);
 
-app.get('/', (req, res) => {
-    res.send(`Hello and welcome`)
-})
 
 /* 
 // connect to db without mongoose

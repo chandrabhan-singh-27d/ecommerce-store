@@ -4,6 +4,7 @@ import userModel from '#models/userModel.js';
 // Token protected route
 export const requireSignIn = async (req, res, next) => {
     try {
+        // Make sure that request headers has token key and not authorization 
         const decode = JWT.verify(req.headers.token, process.env.JWT_KEY);
         req.user = decode;
         next();
