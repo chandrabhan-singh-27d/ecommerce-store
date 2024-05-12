@@ -8,6 +8,7 @@ const UserRegister = ({ openModal, closeModal }) => {
     const [userConfPassword, setUserConfPassword] = useState("");
     const [userPhone, setUserPhone] = useState("");
     const [userAddress, setUserAddress] = useState("");
+    const [userSecurityQuestion, setUserSecurityQuestion] = useState("");
 
     /* Address to call api request */
     const API_ENDPOINT = import.meta.env.VITE_API;
@@ -27,6 +28,7 @@ const UserRegister = ({ openModal, closeModal }) => {
             setUserConfPassword("");
             setUserPhone("");
             setUserAddress("");
+            setUserSecurityQuestion("");
 
             /* Close register modal */
             registerModal.current?.close()
@@ -39,13 +41,14 @@ const UserRegister = ({ openModal, closeModal }) => {
         email: userEmail,
         password: userPassword,
         phone: userPhone,
-        address: userAddress
+        address: userAddress,
+        securityQuestion: userSecurityQuestion
     };
 
     /* Register form submit handler */
     const handleRegistrationSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (userPassword !== userConfPassword) {
             alert("Password and confirm password does not match")
             return;
@@ -59,9 +62,9 @@ const UserRegister = ({ openModal, closeModal }) => {
                 },
                 body: JSON.stringify(user)
             });
-            const {resData} = await response.json();
-            
-            if(resData.success) {
+            const { resData } = await response.json();
+
+            if (resData.success) {
                 registerModal.current?.close();
                 alert(resData.message); //alternatively we can use toast to show the message in a clean way
             }
@@ -74,7 +77,7 @@ const UserRegister = ({ openModal, closeModal }) => {
     return (
         <dialog
             ref={registerModal}
-            className="w-1/4 border rounded-xl box-border shadow-lg border-gray-500 p-3 backdrop:bg-black/60"
+            className="w-[30%] border rounded-xl box-border shadow-lg border-gray-500 p-3 backdrop:bg-black/60"
             onCancel={closeModal}
         >
             <div className="flex justify-end">
@@ -100,50 +103,9 @@ const UserRegister = ({ openModal, closeModal }) => {
                     Register
                 </p>
             </div>
-            {/* 
-                
-                The below code is for oAuth implementation will do it later
-
-            */}
-
-            {/* <div className="text-center font-semibold">
-                <p className="mt-1 text-sm leading-4 text-slate-800">
-                    Register With
-                </p>
-            </div>
-            <div className="mt-5 flex gap-2 px-2">
-                <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
-                    <img
-                        src="https://www.svgrepo.com/show/512317/github-142.svg"
-                        alt="GitHub"
-                        className="h-[18px] w-[18px] "
-                    />
-
-                </button>
-                <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
-                    <img
-                        src="https://www.svgrepo.com/show/475656/google-color.svg"
-                        alt="Google"
-                        className="h-[18px] w-[18px] "
-                    />
-                </button>
-                <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
-                    <img
-                        src="https://www.svgrepo.com/show/448234/linkedin.svg"
-                        alt="Google"
-                        className="h-[18px] w-[18px] "
-                    />
-                </button>
-            </div>
-            <div className="flex w-full items-center gap-2 py-6 text-sm text-slate-600">
-                <div className="h-px w-full bg-slate-200" />
-                OR
-                <div className="h-px w-full bg-slate-200" />
-            </div> */}
-
-            <form id="register-form" className="max-w-sm mx-auto flex flex-col justify-center pb-2 px-5" onSubmit={handleRegistrationSubmit}>
+            <form id="register-form" className="mx-auto flex flex-col justify-center pb-2 px-7" onSubmit={handleRegistrationSubmit}>
                 <div className="mb-3">
-                    <label htmlFor="name" name="name" className="block mb-2 text-sm font-medium text-gray-900">Name</label>
+                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">Name</label>
                     <input
                         type="text"
                         id="name"
@@ -157,7 +119,7 @@ const UserRegister = ({ openModal, closeModal }) => {
                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Email</label>
                     <input
                         type="email"
-                        id="register-email"
+                        id="email"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="name@mail.com"
                         required
                         value={userEmail}
@@ -167,17 +129,17 @@ const UserRegister = ({ openModal, closeModal }) => {
                     <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">Password</label>
                     <input
                         type="password"
-                        id="register-password"
+                        id="password"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="Please enter a password"
                         required value={userPassword}
                         onChange={(e) => setUserPassword(e.target.value)} />
                 </div>
                 <div className="mb-5">
-                    <label htmlFor="conf-password" className="block mb-2 text-sm font-medium text-gray-900">Cofirm Password</label>
+                    <label htmlFor="conf_password" className="block mb-2 text-sm font-medium text-gray-900">Confirm Password</label>
                     <input
                         type="password"
-                        id="conf-password"
+                        id="conf_password"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="Please confirm password"
                         required value={userConfPassword}
@@ -187,7 +149,7 @@ const UserRegister = ({ openModal, closeModal }) => {
                     <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900">Phone</label>
                     <input
                         type="text"
-                        id="register-phone"
+                        id="phone"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="Please enter your phone number"
                         required
@@ -198,26 +160,27 @@ const UserRegister = ({ openModal, closeModal }) => {
                     <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900">Address</label>
                     <input
                         type="text"
-                        id="phone"
+                        id="address"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="Please enter your address"
                         required
                         value={userAddress}
                         onChange={(e) => setUserAddress(e.target.value)} />
                 </div>
-                {/* <div className="flex items-start mb-5">
-                    <div className="flex items-center h-5">
-                        <input
-                            id="remember"
-                            type="checkbox" value=""
-                            className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
-                            required />
-                    </div>
-                    <label htmlFor="remember" className="ms-2 text-sm font-medium text-gray-900">Remember me</label>
-                </div> */}
+                <div className="mb-5">
+                    <label htmlFor="security_question" className="block mb-2 text-sm font-medium text-gray-900">What's your best friend's middle name?</label>
+                    <input
+                        type="text"
+                        id="security_question"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        placeholder="Please enter your address"
+                        required
+                        value={userAddress}
+                        onChange={(e) => setUserSecurityQuestion(e.target.value)} />
+                </div>
                 <button
                     type="submit"
-                    className="text-white bg-primary_color hover:bg-primary_hover focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Submit</button>
+                    className="text-white bg-primary_color hover:bg-primary_hover focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center self-center">Submit</button>
             </form>
         </dialog>
     );

@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import UserRegister from "./Register";
 import { useAuth } from "@/context/auth";
+import ResetPassword from "./ResetPassword";
 
 const UserLogin = ({ openModal, closeModal }) => {
     const [userEmail, setUserEmail] = useState("");
     const [userPassword, setUserPassword] = useState("");
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+    const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
     const loginModal = useRef();
     const [auth, setAuth] = useAuth()
     /* Address to call api request */
@@ -66,6 +68,11 @@ const UserLogin = ({ openModal, closeModal }) => {
         setIsRegisterModalOpen(true);
     }
 
+    const redirectToResetPassword = () => {
+        loginModal.current?.close();
+        setIsResetPasswordModalOpen(true)
+    }
+
     return (
         <>
             <dialog
@@ -99,46 +106,6 @@ const UserLogin = ({ openModal, closeModal }) => {
                         You must be logged in to perform this action.
                     </p>
                 </div>
-                {/* 
-                
-                The below code is for oAuth implementation will do it later
-
-            */}
-
-                {/* <div className="text-center font-semibold">
-                <p className="mt-1 text-sm leading-4 text-slate-800">
-                    Login With
-                </p>
-            </div>
-            <div className="mt-5 flex gap-2 px-2">
-                <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
-                    <img
-                        src="https://www.svgrepo.com/show/512317/github-142.svg"
-                        alt="GitHub"
-                        className="h-[18px] w-[18px] "
-                    />
-
-                </button>
-                <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
-                    <img
-                        src="https://www.svgrepo.com/show/475656/google-color.svg"
-                        alt="Google"
-                        className="h-[18px] w-[18px] "
-                    />
-                </button>
-                <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
-                    <img
-                        src="https://www.svgrepo.com/show/448234/linkedin.svg"
-                        alt="Google"
-                        className="h-[18px] w-[18px] "
-                    />
-                </button>
-            </div>
-            <div className="flex w-full items-center gap-2 py-6 text-sm text-slate-600">
-                <div className="h-px w-full bg-slate-200" />
-                OR
-                <div className="h-px w-full bg-slate-200" />
-            </div> */}
                 <form id="login-form" className="max-w-sm mx-auto flex flex-col justify-center pb-2 px-5" onSubmit={handleUserLogin}>
                     <div className="mb-5">
                         <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Email</label>
@@ -159,16 +126,6 @@ const UserLogin = ({ openModal, closeModal }) => {
                             required value={userPassword}
                             onChange={(e) => setUserPassword(e.target.value)} />
                     </div>
-                    {/* <div className="flex items-start mb-5">
-                    <div className="flex items-center h-5">
-                        <input
-                            id="remember"
-                            type="checkbox" value=""
-                            className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
-                            required />
-                    </div>
-                    <label htmlFor="remember" className="ms-2 text-sm font-medium text-gray-900">Remember me</label>
-                </div> */}
                     <button
                         type="submit"
                         className="text-white bg-primary_color hover:bg-primary_hover focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Submit</button>
@@ -179,10 +136,20 @@ const UserLogin = ({ openModal, closeModal }) => {
                         Sign up
                     </span>
                 </div>
+                <div className="mt-2 mb-4 text-center text-sm text-slate-600">
+                    Forgot Password? &nbsp;
+                    <span onClick={redirectToResetPassword} className="cursor-pointer font-medium text-[#4285f4]">
+                        Reset
+                    </span>
+                </div>
             </dialog>
             <UserRegister
                 openModal={isRegisterModalOpen}
                 closeModal={() => setIsRegisterModalOpen(false)}
+            />
+            <ResetPassword 
+                openModal={isResetPasswordModalOpen}
+                closeModal={() => setIsResetPasswordModalOpen(false)}
             />
         </>
     );
