@@ -1,5 +1,10 @@
 import { Router } from 'express';
-import {registerController, loginController, testController} from '#controllers/authController.js'
+import {
+    registerController,
+    loginController,
+    testController,
+    resetPasswordController
+} from '#controllers/authController.js'
 import { requireSignIn, isAdmin } from '#middlewares/authMiddleware.js';
 
 //Router instance
@@ -13,11 +18,14 @@ router.post('/register', registerController);
 // LOGIN || POST
 router.post('/login', loginController)
 
-// test || GET
-router.get('/test',requireSignIn, isAdmin, testController)
+// Password Reset
+router.post('/reset-password', resetPasswordController)
 
 // Protected Route
 router.get('/user-auth', requireSignIn, (req, res) => {
-    res.status(200).send({ok: true})
+    res.status(200).send({ ok: true })
 })
+
+// test || GET
+router.get('/test', requireSignIn, isAdmin, testController)
 export default router;

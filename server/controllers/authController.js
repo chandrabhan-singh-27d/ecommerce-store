@@ -12,7 +12,7 @@ const validateEntity = (entity, res, errorMsg) => {
 // REGISTER USER || POST
 export const registerController = async (req, res) => {
     try {
-        const { name, email, password, phone, address } = req.body;
+        const { name, email, password, phone, address, securityQuestion } = req.body;
 
         // validations
         validateEntity(name, res, "Name is required");
@@ -20,6 +20,7 @@ export const registerController = async (req, res) => {
         validateEntity(password, res, "Password is required");
         validateEntity(phone, res, "Phone number is required");
         validateEntity(address, res, "Address is required");
+        validateEntity(securityQuestion, res, "Security question is required")
 
         // check existing user
         const existingUser = await userModel.findOne({ email });
@@ -34,7 +35,7 @@ export const registerController = async (req, res) => {
         // register new user
         const hashedPassword = await hashPassword(password);
 
-        const user = await new userModel({ name, email, password: hashedPassword, phone, address }).save();
+        const user = await new userModel({ name, email, password: hashedPassword, phone, address, securityQuestion }).save();
 
         res.status(201).json({
             success: true,
@@ -106,6 +107,43 @@ export const loginController = async (req, res) => {
         })
     }
 
+}
+
+// Reset User Password || POST
+export const resetPasswordController = async (req, res) => {
+    try {
+        const { email, newPassword, securityQuestion } = req.body;
+        
+        // validations
+        validateEntity(email, res, "email is required");
+        validateEntity(securityQuestion, res, "Security question is required");
+        validateEntity(newPassword, res, "New Password is required");
+
+        const user = await userModel.findOne({email, securityQuestion});
+
+        if(!user) {
+            return res.status(404).send({
+                success: false,
+                message: "Incorrect email or security answer",
+            })
+        }
+
+        const hashedPassword = await hashPassword(newPassword);
+        await userModel.findById(user._id, {password: hashedPassword}).save();
+
+        res.status(200).send({
+            success: true,
+            message: "Password reset successfully"
+        })
+
+    } catch (error) {
+        console.log(`Error in resseting the user password::${error}`);
+        res.status(500).send({
+            success: false,
+            message: "Password reset failure",
+            error
+        })
+    }
 }
 
 // test cntroller
