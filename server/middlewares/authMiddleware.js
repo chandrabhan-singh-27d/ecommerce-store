@@ -10,7 +10,7 @@ export const requireSignIn = async (req, res, next) => {
         next();
     } catch (error) {
         console.log(error)
-        res.status(501).json({
+        res.status(401).json({
             success: false,
             message: "Error in requireSignIn",
             error

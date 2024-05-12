@@ -7,6 +7,8 @@ import Layout from '@/components/Layout';
 // Pages
 import Home from '@/pages/Home';
 import About from '@/pages/About';
+import AdminPanel from '@/pages/User/AdminPanel';
+import ProtectedRoutes from '@/components/ProtectedRoutes';
 
 
 
@@ -14,8 +16,6 @@ const router = createBrowserRouter([
     {
         path: "/",
         element: <Layout />,
-        // loader: Loader,
-        // errorElement: rootError,
         children: [
             {
                 path: "",
@@ -24,7 +24,17 @@ const router = createBrowserRouter([
             {
                 path: "about",
                 element: <About />
-            }
+            },
+            {
+                path: "",
+                element: <ProtectedRoutes />,
+                children: [
+                    {
+                        path: "dashboard",
+                        element: <AdminPanel />
+                    },
+                ]
+            },
         ]
     }
 ])
