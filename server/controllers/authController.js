@@ -129,7 +129,7 @@ export const resetPasswordController = async (req, res) => {
         }
 
         const hashedPassword = await hashPassword(newPassword);
-        await userModel.findById(user._id, {password: hashedPassword}).save();
+        await userModel.findByIdAndUpdate(user._id, {password: hashedPassword});
 
         res.status(200).send({
             success: true,
