@@ -8,6 +8,8 @@ const UserLogin = ({ openModal, closeModal }) => {
     const [userPassword, setUserPassword] = useState("");
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
     const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
+    const [registrationFulfilled, setRegistrationFulfilled] = useState(false);
+    const [resetFulfilled, setResetFulfilled] = useState(false);
     const loginModal = useRef();
     const [auth, setAuth] = useAuth()
     /* Address to call api request */
@@ -25,6 +27,12 @@ const UserLogin = ({ openModal, closeModal }) => {
             loginModal.current?.close()
         }
     }, [openModal])
+
+    // Open login modal if user is registered or password is reset
+    useEffect(() => {
+        loginModal.current?.showModal();
+    }, [registrationFulfilled, resetFulfilled])
+
 
     /* Request body object */
     const user = {
@@ -57,6 +65,8 @@ const UserLogin = ({ openModal, closeModal }) => {
                 /* Close login modal only when the request is fulfilled */
                 loginModal.current?.close();
                 alert(resData.message);
+            } else {
+                alert(resData.message)
             }
         } catch (error) {
             console.log("error in login", error);
@@ -146,10 +156,14 @@ const UserLogin = ({ openModal, closeModal }) => {
             <UserRegister
                 openModal={isRegisterModalOpen}
                 closeModal={() => setIsRegisterModalOpen(false)}
+                setIsRegisterModalOpen={setIsRegisterModalOpen}
+                setRegistrationFulfilled={setRegistrationFulfilled} 
             />
-            <ResetPassword 
+            <ResetPassword
                 openModal={isResetPasswordModalOpen}
                 closeModal={() => setIsResetPasswordModalOpen(false)}
+                setIsResetPasswordModalOpen={setIsResetPasswordModalOpen}
+                setResetFulfilled={setResetFulfilled}
             />
         </>
     );

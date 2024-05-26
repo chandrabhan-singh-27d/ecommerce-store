@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 
-const ResetPassword = ({ openModal, closeModal }) => {
+const ResetPassword = ({ openModal, closeModal, setIsResetPasswordModalOpen, setResetFulfilled }) => {
     const [email, setEmail] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [securityQuestion, setSecurityQuestion] = useState("");
     const resetPasswordModal = useRef();
+
     /* Address to call api request */
     const API_ENDPOINT = import.meta.env.VITE_API;
 
@@ -12,12 +13,12 @@ const ResetPassword = ({ openModal, closeModal }) => {
         if (openModal) {
             resetPasswordModal.current?.showModal()
         } else {
-            /* Reset Login variables */
+            /* Reset variables */
             setEmail("")
             setNewPassword("")
             setSecurityQuestion("")
 
-            /* Close login modal */
+            /* Close modal */
             resetPasswordModal.current?.close()
         }
     }, [openModal])
@@ -43,7 +44,12 @@ const ResetPassword = ({ openModal, closeModal }) => {
             const resData = await response.json();
 
             if (resData?.success) {
-                redirectToLogin();
+                setIsResetPasswordModalOpen(false)
+                resetPasswordModal.current?.close();
+                alert(resData.message); 
+                setResetFulfilled(true);
+            } else {
+                alert(resData.message)
             }
         } catch (error) {
             console.log("error in login", error);

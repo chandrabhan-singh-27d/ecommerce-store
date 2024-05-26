@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-const UserRegister = ({ openModal, closeModal }) => {
+const UserRegister = ({ openModal, closeModal, setRegistrationFulfilled, setIsRegisterModalOpen }) => {
     /* User State Variables */
     const [userName, setUserName] = useState("");
     const [userEmail, setUserEmail] = useState("");
@@ -62,11 +62,15 @@ const UserRegister = ({ openModal, closeModal }) => {
                 },
                 body: JSON.stringify(user)
             });
-            const { resData } = await response.json();
+            const resData  = await response.json();
 
             if (resData.success) {
+                setIsRegisterModalOpen(false)
                 registerModal.current?.close();
-                alert(resData.message); //alternatively we can use toast to show the message in a clean way
+                alert(resData.message); 
+                setRegistrationFulfilled(true);
+            } else {
+                alert(resData.message)
             }
         } catch (error) {
             console.log("registation error", error)
@@ -175,7 +179,7 @@ const UserRegister = ({ openModal, closeModal }) => {
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="Please enter your address"
                         required
-                        value={userAddress}
+                        value={userSecurityQuestion}
                         onChange={(e) => setUserSecurityQuestion(e.target.value)} />
                 </div>
                 <button
