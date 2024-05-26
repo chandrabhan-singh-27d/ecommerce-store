@@ -7,8 +7,10 @@ import Layout from '@/components/Layout';
 // Pages
 import Home from '@/pages/Home';
 import About from '@/pages/About';
-import AdminPanel from '@/pages/User/AdminPanel';
-import ProtectedRoutes from '@/components/ProtectedRoutes';
+import AdminPanel from '@/pages/Admin/AdminPanel';
+import ProtectedRoutes from '@/pages/Auth/ProtectedRoutes';
+import AdminRoutes from '@/pages/Auth/AdminRoutes';
+import UserPanel from '@/pages/User/UserPanel';
 
 
 
@@ -28,6 +30,16 @@ const router = createBrowserRouter([
             {
                 path: "",
                 element: <ProtectedRoutes />,
+                children: [
+                    {
+                        path: "dashboard",
+                        element: <UserPanel />
+                    },
+                ]
+            },
+            {
+                path: "admin",
+                element: <AdminRoutes />,
                 children: [
                     {
                         path: "dashboard",

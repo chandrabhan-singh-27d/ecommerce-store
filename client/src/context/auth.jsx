@@ -3,25 +3,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 const AuthContext = createContext();
 
 
-const AuthProvider = ({children}) => {
+const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState({
-        user: null,
-        token: ""
+        user: JSON.parse(localStorage.getItem('userAuth')) ? JSON.parse(localStorage.getItem('userAuth')).user : null,
+        token: JSON.parse(localStorage.getItem('userAuth')) ? JSON.parse(localStorage.getItem('userAuth')).token : ""
     });
 
-    useEffect(() => {
-        const userData = localStorage.getItem('userAuth');
-
-        if(userData) {
-            const parsedData = JSON.parse(userData);
-            setAuth({
-                ...auth,
-                user: parsedData.user,
-                token: parsedData.token
-            })
-        }
-
-    },[])
 
     return (
         <AuthContext.Provider value={[auth, setAuth]}>
@@ -34,5 +21,5 @@ const useAuth = () => useContext(AuthContext);
 
 export {
     useAuth,
-    AuthProvider    
+    AuthProvider
 }

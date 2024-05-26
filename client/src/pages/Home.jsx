@@ -4,15 +4,15 @@ import UserLogin from "./Auth/Login";
 
 
 const Home = () => {
-    const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
+    // const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
     return (
         <>
             <SEO title={'ecommerce App'} description={''} keywords={''} author={''} />
-            <UserLogin
+            {/* <UserLogin
                 openModal={isLoginModalOpen}
                 closeModal={() => setIsLoginModalOpen(false)}
-            />
+            /> */}
         </>
     );
 }
