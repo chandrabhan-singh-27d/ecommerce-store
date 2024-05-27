@@ -12,8 +12,8 @@ A full stack app demonstrating an ecommerce store with React on the client side 
 
 # Installation
 To install the app, simply fork the project and clone it on local machine. Start a terminal and locate to root path of the project. Next steps:
-    ```sh
-        chmod +x install.sh
+    ```
+        chmod +x install.sh && 
         ./install.sh
     ```
 # Starting Application
