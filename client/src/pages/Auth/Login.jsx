@@ -1,22 +1,23 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import UserRegister from "./Register";
 import { useAuth } from "@/context/auth";
 import ResetPassword from "./ResetPassword";
+import { useUserControls } from "@/context/UserControls";
 
-const UserLogin = ({ openModal, closeModal }) => {
+const UserLogin = () => {
     const [userEmail, setUserEmail] = useState("");
     const [userPassword, setUserPassword] = useState("");
-    const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-    const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
-    const [registrationFulfilled, setRegistrationFulfilled] = useState(false);
-    const [resetFulfilled, setResetFulfilled] = useState(false);
-    const loginModal = useRef();
+    const loginModal = useRef(null);
+    
+    /* Contexts */
     const [auth, setAuth] = useAuth()
+    const {isLoginOpen,setIsLoginOpen, isRegisterOpen, setIsRegisterOpen, isResetOpen, setIsResetOpen} = useUserControls();
+    
     /* Address to call api request */
     const API_ENDPOINT = import.meta.env.VITE_API;
 
     useEffect(() => {
-        if (openModal) {
+        if (isLoginOpen) {
             loginModal.current?.showModal()
         } else {
             /* Reset Login variables */
@@ -26,12 +27,7 @@ const UserLogin = ({ openModal, closeModal }) => {
             /* Close login modal */
             loginModal.current?.close()
         }
-    }, [openModal])
-
-    // Open login modal if user is registered or password is reset
-    useEffect(() => {
-        loginModal.current?.showModal();
-    }, [registrationFulfilled, resetFulfilled])
+    }, [isLoginOpen])
 
 
     /* Request body object */
@@ -63,7 +59,7 @@ const UserLogin = ({ openModal, closeModal }) => {
                 localStorage.setItem('userAuth', JSON.stringify(resData));
 
                 /* Close login modal only when the request is fulfilled */
-                loginModal.current?.close();
+                setIsLoginOpen(() => false)
                 alert(resData.message);
             } else {
                 alert(resData.message)
@@ -74,13 +70,12 @@ const UserLogin = ({ openModal, closeModal }) => {
     }
 
     const redirectToRegister = () => {
-        loginModal.current?.close();
-        setIsRegisterModalOpen(true);
+        setIsRegisterOpen(true);
     }
 
     const redirectToResetPassword = () => {
-        loginModal.current?.close();
-        setIsResetPasswordModalOpen(true)
+        setIsLoginOpen(false)
+        setIsResetOpen(true)
     }
 
     return (
@@ -88,10 +83,10 @@ const UserLogin = ({ openModal, closeModal }) => {
             <dialog
                 ref={loginModal}
                 className="w-1/4 border rounded-xl box-border shadow-lg border-gray-500 p-3 backdrop:bg-black/60"
-                onCancel={closeModal}
+                onCancel={() => setIsLoginOpen(false)}
             >
                 <div className="flex justify-end">
-                    <button onClick={closeModal} className="hover:bg-gray-100 hover:rounded-md p-2">
+                    <button onClick={() => setIsLoginOpen(false)} className="hover:bg-gray-100 hover:rounded-md p-2">
                         <svg
                             aria-hidden="true"
                             className="w-5 h-5"
@@ -110,10 +105,10 @@ const UserLogin = ({ openModal, closeModal }) => {
                 </div>
                 <div className="text-center p-5">
                     <p className="mb-3 text-2xl font-semibold leading-5 text-slate-900">
-                        Login to your account
+                        Sign in to your account
                     </p>
                     <p className="mt-2 text-sm leading-4 text-slate-600">
-                        You must be logged in to perform this action.
+                        You must be signed in to perform this action.
                     </p>
                 </div>
                 <form id="login-form" className="max-w-sm mx-auto flex flex-col justify-center pb-2 px-5" onSubmit={handleUserLogin}>
@@ -153,18 +148,8 @@ const UserLogin = ({ openModal, closeModal }) => {
                     </span>
                 </div>
             </dialog>
-            <UserRegister
-                openModal={isRegisterModalOpen}
-                closeModal={() => setIsRegisterModalOpen(false)}
-                setIsRegisterModalOpen={setIsRegisterModalOpen}
-                setRegistrationFulfilled={setRegistrationFulfilled} 
-            />
-            <ResetPassword
-                openModal={isResetPasswordModalOpen}
-                closeModal={() => setIsResetPasswordModalOpen(false)}
-                setIsResetPasswordModalOpen={setIsResetPasswordModalOpen}
-                setResetFulfilled={setResetFulfilled}
-            />
+            {isRegisterOpen && <UserRegister />}
+            {isResetOpen && <ResetPassword />}
         </>
     );
 };

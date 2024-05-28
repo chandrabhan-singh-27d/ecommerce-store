@@ -19,7 +19,8 @@ const ResetPassword = ({ openModal, closeModal, setIsResetPasswordModalOpen, set
             setSecurityQuestion("")
 
             /* Close modal */
-            resetPasswordModal.current?.close()
+            resetPasswordModal.current?.close();
+            setResetFulfilled(false)
         }
     }, [openModal])
 

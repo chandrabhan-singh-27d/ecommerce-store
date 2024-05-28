@@ -1,6 +1,7 @@
+import { useUserControls } from "@/context/UserControls";
 import { useState, useRef, useEffect } from "react";
 
-const UserRegister = ({ openModal, closeModal, setRegistrationFulfilled, setIsRegisterModalOpen }) => {
+const UserRegister = () => {
     /* User State Variables */
     const [userName, setUserName] = useState("");
     const [userEmail, setUserEmail] = useState("");
@@ -10,6 +11,8 @@ const UserRegister = ({ openModal, closeModal, setRegistrationFulfilled, setIsRe
     const [userAddress, setUserAddress] = useState("");
     const [userSecurityQuestion, setUserSecurityQuestion] = useState("");
 
+    const {isRegisterOpen, setIsRegisterOpen, setIsLoginOpen } = useUserControls();
+
     /* Address to call api request */
     const API_ENDPOINT = import.meta.env.VITE_API;
 
@@ -18,8 +21,8 @@ const UserRegister = ({ openModal, closeModal, setRegistrationFulfilled, setIsRe
 
     /* Toggle Modal */
     useEffect(() => {
-        if (openModal) {
-            registerModal.current?.showModal()
+        if (isRegisterOpen) {
+            registerModal.current?.showModal();            
         } else {
             /* Reset user variables */
             setUserName("");
@@ -31,9 +34,9 @@ const UserRegister = ({ openModal, closeModal, setRegistrationFulfilled, setIsRe
             setUserSecurityQuestion("");
 
             /* Close register modal */
-            registerModal.current?.close()
+            registerModal.current?.close();
         }
-    }, [openModal])
+    }, [isRegisterOpen])
 
     /* Request body object */
     const user = {
@@ -65,10 +68,9 @@ const UserRegister = ({ openModal, closeModal, setRegistrationFulfilled, setIsRe
             const resData  = await response.json();
 
             if (resData.success) {
-                setIsRegisterModalOpen(false)
-                registerModal.current?.close();
+                setIsRegisterOpen(false)
                 alert(resData.message); 
-                setRegistrationFulfilled(true);
+                setIsLoginOpen(true);
             } else {
                 alert(resData.message)
             }
@@ -82,10 +84,10 @@ const UserRegister = ({ openModal, closeModal, setRegistrationFulfilled, setIsRe
         <dialog
             ref={registerModal}
             className="w-[30%] border rounded-xl box-border shadow-lg border-gray-500 p-3 backdrop:bg-black/60"
-            onCancel={closeModal}
+            onCancel={() => setIsRegisterOpen(false)}
         >
             <div className="flex justify-end">
-                <button onClick={closeModal} className="hover:bg-gray-100 hover:rounded-md p-2">
+                <button onClick={() => setIsRegisterOpen(false)} className="hover:bg-gray-100 hover:rounded-md p-2">
                     <svg
                         aria-hidden="true"
                         className="w-5 h-5"

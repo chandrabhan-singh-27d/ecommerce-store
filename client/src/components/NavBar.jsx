@@ -6,12 +6,18 @@ import { GoSearch } from "react-icons/go";
 import { useNavigate } from 'react-router-dom';
 import logo from "../assets/logo_new/svg/logo-no-background.svg";
 import { useRef, useState, useEffect } from "react";
+import { useAuth } from "@/context/auth";
+import UserLogin from "@/pages/Auth/Login";
+import { useUserControls } from "@/context/UserControls";
 
 const NavBar = () => {
     //hooks calls
     const navigateTo = useNavigate();
     const [isUserControlOpen, setIsUserControlOpen] = useState(false);
     const userControl = useRef(null);
+    
+    const {isLoginOpen, setIsLoginOpen} = useUserControls();
+    const [auth, setAuth] = useAuth();
 
     //Navigation items
     const navItems = [
@@ -37,7 +43,7 @@ const NavBar = () => {
     /* Close user control dropdown if clicked outside */
     const handleClickOutside = (e) => {
         const userButton = document.querySelector('#user-button')
-        if(userButton.contains(e.target)){ 
+        if (userButton.contains(e.target)) {
             // ignore event if clicked on user button/icon
             return
         } else if (userControl.current && !userControl.current.contains(e.target)) {
@@ -55,6 +61,17 @@ const NavBar = () => {
 
     const goToHomepage = () => {
         navigateTo('/')
+    }
+
+    const handleLogin = () => {
+        setIsUserControlOpen(false);
+        setIsLoginOpen(true);
+    }
+
+    const handleLogout = () => {
+        setIsUserControlOpen(false);
+        localStorage.clear();
+        window.location.reload();
     }
 
     return (
@@ -85,20 +102,19 @@ const NavBar = () => {
             {isUserControlOpen && <div ref={userControl} className=" bg-white divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-12 right-2">
                 <ul className="py-2 text-sm ">
                     <li>
-                        <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Dashboard</span>
+                        <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Profile</span>
                     </li>
-                    <li>
-                        <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Settings</span>
+                    {!auth.user ? <li onClick={handleLogin}>
+                        <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Sign In</span>
                     </li>
-                    <li>
-                        <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Earnings</span>
-                    </li>
-                    <li>
-                        <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Sign out</span>
-                    </li>
+                        : <li onClick={handleLogout}>
+                            <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Sign out</span>
+                        </li>
+                    }
                 </ul>
             </div>
             }
+            {isLoginOpen && <UserLogin />}
         </header>
     );
 }

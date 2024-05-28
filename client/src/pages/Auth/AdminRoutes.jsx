@@ -55,7 +55,14 @@ const AdminRoutes = () => {
     return (
         <>
             {isLoginModalOpen && <UserLogin openModal={isLoginModalOpen} closeModal={handleModalClose} />}
-            {ok ? <Outlet /> : <LoadingPage />}
+            {ok ? <Outlet /> : !auth.user ?
+                <div className="mt-4 px-3 py-2 bg-red-100 text-red-700">Please sign in to access the page.</div>
+                : (
+                    <>
+                        <div className="mt-4 px-3 py-2 bg-red-100 text-red-700">Please contact admin for access to this page.</div>
+                        <LoadingPage />
+                    </>
+                )}
         </>
     )
 
