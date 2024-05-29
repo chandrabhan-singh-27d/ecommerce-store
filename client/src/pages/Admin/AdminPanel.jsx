@@ -1,11 +1,33 @@
 import SEO from "@/components/SEO"
+import SideMenu from "@/components/SideMenu";
+import CreateCategory from "./CreateCategory";
+import CreateProducts from "./CreateProducts";
+import ManageUsers from "./ManageUsers";
+import { Outlet } from "react-router-dom";
 
 
 const AdminPanel = () => {
+    const menuList = [
+        {
+            path: 'create-category',
+            name: 'Create Category'
+        },
+        {
+            path: 'create-product',
+            name: 'Create Product'
+        },
+        {
+            path: 'users',
+            name: 'Users'
+        },
+    ]
     return (
         <>
             <SEO title={'Admin - ecommerce App'} description={'Admin Panel to manage Iventory and Orders'} keywords={''} author={''} />
-            <div className="text-pruple-700">Admin Panel</div>
+            <div className="flex gap-3">
+                <SideMenu menuList={menuList} />
+                <Outlet />
+            </div>
         </>
     )
 }

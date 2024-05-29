@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/auth"
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import LoadingPage from "../../components/LoadingPage";
 import UserLogin from "@/pages/Auth/Login";
 import { useUserControls } from "@/context/UserControls";
@@ -9,10 +9,9 @@ import { useUserControls } from "@/context/UserControls";
 const ProtectedRoutes = () => {
     const API_ENDPOINT = import.meta.env.VITE_API;
     const [ok, setOk] = useState(false);
-    const navigate = useNavigate();
-    
+
     /* Contexts */
-    const {isLoginOpen, setIsLoginOpen} = useUserControls();
+    const { setIsLoginOpen } = useUserControls();
     const [auth] = useAuth();
 
     const authCheck = async () => {
@@ -50,12 +49,16 @@ const ProtectedRoutes = () => {
 
     return (
         <div>
-            {isLoginOpen && <UserLogin  />}
+            <UserLogin />
             {ok ? <Outlet /> : !auth.user ?
-                <div className="mt-4 px-3 py-2 bg-red-100 text-red-700">Please sign in to access the page.</div>
+                <div className="mt-4 px-3 py-2 h-[80vh] flex justify-center items-center">
+                    <div className="bg-white shadow-lg px-12 py-16 text-primary_color rounded-md">Please sign in to access the page.</div>
+                </div>
                 : (
                     <>
-                        <div className="mt-4 px-3 py-2 bg-red-100 text-red-700">Please contact admin for access to this page.</div>
+                        <div className="mt-4 px-3 py-2 h-[80vh] flex justify-center items-center">
+                            <div className="bg-white shadow-lg px-12 py-16 text-primary_color rounded-md">Please sign in to access the page.</div>
+                        </div>
                         <LoadingPage />
                     </>
                 )}

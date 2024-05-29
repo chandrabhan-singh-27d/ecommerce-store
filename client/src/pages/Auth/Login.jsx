@@ -71,6 +71,8 @@ const UserLogin = () => {
 
     const redirectToRegister = () => {
         setIsRegisterOpen(true);
+        setIsLoginOpen(false);
+        console.log(isLoginOpen, isRegisterOpen)
     }
 
     const redirectToResetPassword = () => {

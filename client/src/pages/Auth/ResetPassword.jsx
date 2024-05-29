@@ -1,16 +1,18 @@
+import { useUserControls } from "@/context/UserControls";
 import { useState, useRef, useEffect } from "react";
 
-const ResetPassword = ({ openModal, closeModal, setIsResetPasswordModalOpen, setResetFulfilled }) => {
+const ResetPassword = () => {
     const [email, setEmail] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [securityQuestion, setSecurityQuestion] = useState("");
     const resetPasswordModal = useRef();
+    const { setIsLoginOpen, isResetOpen, setIsResetOpen } = useUserControls();
 
     /* Address to call api request */
     const API_ENDPOINT = import.meta.env.VITE_API;
 
     useEffect(() => {
-        if (openModal) {
+        if (isResetOpen) {
             resetPasswordModal.current?.showModal()
         } else {
             /* Reset variables */
@@ -20,9 +22,8 @@ const ResetPassword = ({ openModal, closeModal, setIsResetPasswordModalOpen, set
 
             /* Close modal */
             resetPasswordModal.current?.close();
-            setResetFulfilled(false)
         }
-    }, [openModal])
+    }, [isResetOpen])
 
     /* Request body object */
     const user = {
@@ -45,10 +46,9 @@ const ResetPassword = ({ openModal, closeModal, setIsResetPasswordModalOpen, set
             const resData = await response.json();
 
             if (resData?.success) {
-                setIsResetPasswordModalOpen(false)
-                resetPasswordModal.current?.close();
-                alert(resData.message); 
-                setResetFulfilled(true);
+                setIsResetOpen(false);
+                alert(resData.message);
+                setIsLoginOpen(true);
             } else {
                 alert(resData.message)
             }
@@ -61,10 +61,10 @@ const ResetPassword = ({ openModal, closeModal, setIsResetPasswordModalOpen, set
         <dialog
             ref={resetPasswordModal}
             className="w-1/4 border rounded-xl box-border shadow-lg border-gray-500 p-3 backdrop:bg-black/60"
-            onCancel={closeModal}
+            onCancel={() => setIsResetOpen(false)}
         >
             <div className="flex justify-end">
-                <button onClick={closeModal} className="hover:bg-gray-100 hover:rounded-md p-2">
+                <button onClick={() => setIsResetOpen(false)} className="hover:bg-gray-100 hover:rounded-md p-2">
                     <svg
                         aria-hidden="true"
                         className="w-5 h-5"

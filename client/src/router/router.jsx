@@ -11,6 +11,9 @@ import AdminPanel from '@/pages/Admin/AdminPanel';
 import ProtectedRoutes from '@/pages/Auth/ProtectedRoutes';
 import AdminRoutes from '@/pages/Auth/AdminRoutes';
 import UserPanel from '@/pages/User/UserPanel';
+import CreateCategory from '@/pages/Admin/CreateCategory';
+import CreateProducts from '@/pages/Admin/CreateProducts';
+import ManageUsers from '@/pages/Admin/ManageUsers';
 
 
 
@@ -43,7 +46,21 @@ const router = createBrowserRouter([
                 children: [
                     {
                         path: "dashboard",
-                        element: <AdminPanel />
+                        element: <AdminPanel />,
+                        children: [
+                            {
+                                path: 'create-category',
+                                element: <CreateCategory />
+                            },
+                            {
+                                path: 'create-product',
+                                element: <CreateProducts />
+                            },
+                            {
+                                path: 'users',
+                                element: <ManageUsers />
+                            },
+                        ]
                     },
                 ]
             },
