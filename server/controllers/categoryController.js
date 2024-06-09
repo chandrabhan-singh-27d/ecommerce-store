@@ -1,5 +1,6 @@
 import categoryModel from "#root/models/categoryModel.js";
 import slugify from 'slugify'
+import { nanoid } from "nanoid";
 
 
 export const createCategoryController = async (req, res) => {
@@ -21,13 +22,16 @@ export const createCategoryController = async (req, res) => {
         }
 
         const category = await new categoryModel({
+            uID: nanoid(),
             name,
             slug: slugify(name)
         }).save()
+
+        const savedCategory = await categoryModel.findOne({uID: category.uID}).select("uID name slug -_id");
         return res.status(201).send({
             success: true,
             message: "New category created",
-            category
+            savedCategory
         })
     } catch (error) {
         console.log(`error in creating category:: ${error} `)
@@ -74,7 +78,7 @@ export const updateCategoryController = async (req, res) => {
 
 export const getAllCategoriesController = async (req, res) => {
     try {
-        const categories = await categoryModel.find({});
+        const categories = await categoryModel.find({}).select("uID name slug -_id");
 
         res.status(200).send({
             success: true,
@@ -95,7 +99,7 @@ export const getSingleCategoryController = async (req, res) => {
     try {
         const {slug} = req.params;
 
-        const filteredCategory = await categoryModel.findOne({slug:slug});
+        const filteredCategory = await categoryModel.findOne({slug:slug}).select("uID name slug -_id");
 
         res.status(200).send({
             success: true,
@@ -114,9 +118,9 @@ export const getSingleCategoryController = async (req, res) => {
 
 export const deleteCategory = async (req, res) => {
     try {
-        const {id} = req.params
+        const {uID} = req.params
 
-        const deletedCategory = await categoryModel.findByIdAndDelete(id);
+        const deletedCategory = await categoryModel.findByOneAndDelete({uID}).select("uID name slug -_id");
 
         res.status(200).send({
             success: true,

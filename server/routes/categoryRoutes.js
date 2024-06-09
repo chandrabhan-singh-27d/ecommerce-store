@@ -27,4 +27,4 @@ export default router;
 router.get('/get-category/:slug', getSingleCategoryController)
 
 // Delete categories
-router.delete('/delete-category/:id', requireSignIn, isAdmin, deleteCategory)
+router.delete('/delete-category/:uID', requireSignIn, isAdmin, deleteCategory)
