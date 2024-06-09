@@ -1,7 +1,4 @@
 import { createBrowserRouter } from 'react-router-dom'
-
-// global components
-// import Loader from '../components/Loader'
 import Layout from '@/components/Layout';
 
 // Pages
@@ -14,6 +11,8 @@ import UserPanel from '@/pages/User/UserPanel';
 import CreateCategory from '@/pages/Admin/CreateCategory';
 import CreateProducts from '@/pages/Admin/CreateProducts';
 import ManageUsers from '@/pages/Admin/ManageUsers';
+import Profile from '@/pages/User/Profile';
+import Orders from '@/pages/User/Orders';
 
 
 
@@ -36,7 +35,17 @@ const router = createBrowserRouter([
                 children: [
                     {
                         path: "dashboard",
-                        element: <UserPanel />
+                        element: <UserPanel />,
+                        children: [
+                            {
+                                path: 'user-profile',
+                                element: <Profile />
+                            },
+                            {
+                                path: 'orders',
+                                element: <Orders />
+                            },
+                        ]
                     },
                 ]
             },

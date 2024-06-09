@@ -1,8 +1,5 @@
 import SEO from "@/components/SEO"
 import SideMenu from "@/components/SideMenu";
-import CreateCategory from "./CreateCategory";
-import CreateProducts from "./CreateProducts";
-import ManageUsers from "./ManageUsers";
 import { Outlet } from "react-router-dom";
 
 

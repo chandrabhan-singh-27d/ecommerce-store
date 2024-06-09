@@ -55,7 +55,7 @@ const AdminRoutes = () => {
                 : (
                     <>
                         <div className="mt-4 px-3 py-2 h-[80vh] flex justify-center items-center">
-                            <div className="bg-white shadow-lg px-12 py-16 text-primary_color rounded-md">Please contact admin to access the page.</div>
+                            <div className="bg-white shadow-lg px-12 py-16 text-primary_color rounded-md">Please contact admin to access the page OR sign out and sign in again.</div>
                         </div>
                     </>
                 )}
