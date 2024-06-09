@@ -1,3 +1,4 @@
+import AddInput from "@/components/AddInput";
 import LoadingPage from "@/components/LoadingPage";
 import Table from "@/components/Table"
 import { useEffect, useState } from "react"
@@ -49,10 +50,9 @@ const CreateCategory = () => {
     }, [])
 
     return (
-        <div className="w-full mr-3">
-            <div>CreateCategory</div>
+        <div className="w-full mr-4 px-2 overflow-y-auto">
+            <AddInput />
             {isTableLoading ? <LoadingPage /> : <Table headers={categoryHeaders} data={categoryData} />}
-            
         </div>
 
 

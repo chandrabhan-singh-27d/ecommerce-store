@@ -21,7 +21,7 @@ const AdminPanel = () => {
     return (
         <>
             <SEO title={'Admin - ecommerce App'} description={'Admin Panel to manage Iventory and Orders'} keywords={''} author={''} />
-            <div className="flex gap-3">
+            <div className="flex gap-4 h-[91.8vh] overflow-y-hidden">
                 <SideMenu menuList={menuList} />
                 <Outlet />
             </div>

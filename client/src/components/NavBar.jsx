@@ -84,7 +84,7 @@ const NavBar = () => {
     }
 
     return (
-        <header className="flex justify-between items-center py-2 px-1 mb-4">
+        <header className="flex justify-between items-center py-2 px-1 mb-4 sticky top-0 z-50 bg-white">
             <div className="w-[12%] h-[12%] cursor-pointer" onClick={goToHomepage}>
                 <img src={logo} alt="logo" />
             </div>
