@@ -58,11 +58,11 @@ const router = createBrowserRouter([
                         element: <AdminPanel />,
                         children: [
                             {
-                                path: 'create-category',
+                                path: 'category',
                                 element: <CreateCategory />
                             },
                             {
-                                path: 'create-product',
+                                path: 'product',
                                 element: <CreateProducts />
                             },
                             {

@@ -15,8 +15,8 @@ const NavBar = () => {
     const navigateTo = useNavigate();
     const [isUserControlOpen, setIsUserControlOpen] = useState(false);
     const userControl = useRef(null);
-    
-    const {isLoginOpen, setIsLoginOpen} = useUserControls();
+
+    const { isLoginOpen, setIsLoginOpen } = useUserControls();
     const [auth, setAuth] = useAuth();
 
     //Navigation items
@@ -63,6 +63,15 @@ const NavBar = () => {
         navigateTo('/')
     }
 
+    const goToUserDashboard = () => {
+        navigateTo('/dashboard');
+        setIsUserControlOpen(false);
+    }
+
+    const goToAdminPanel = () => {
+        navigateTo('/admin/dashboard');
+        setIsUserControlOpen(false);
+    }
     const handleLogin = () => {
         setIsUserControlOpen(false);
         setIsLoginOpen(true);
@@ -75,7 +84,7 @@ const NavBar = () => {
     }
 
     return (
-        <header className="flex justify-between items-center py-1 px-1">
+        <header className="flex justify-between items-center py-2 px-1 mb-4">
             <div className="w-[12%] h-[12%] cursor-pointer" onClick={goToHomepage}>
                 <img src={logo} alt="logo" />
             </div>
@@ -101,16 +110,27 @@ const NavBar = () => {
             </div>
             {isUserControlOpen && <div ref={userControl} className=" bg-white divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-12 right-2">
                 <ul className="py-2 text-sm ">
-                    <li>
-                        <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Profile</span>
-                    </li>
-                    {!auth.user ? <li onClick={handleLogin}>
-                        <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Sign In</span>
-                    </li>
-                        : <li onClick={handleLogout}>
-                            <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Sign out</span>
-                        </li>
-                    }
+                    {!auth.user ? (
+                        <>
+                            <li onClick={handleLogin}>
+                                <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Sign In</span>
+                            </li>
+
+                        </>
+                    ) : (
+                        <>
+                            <li onClick={goToUserDashboard}>
+                                <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Dashboard</span>
+                            </li>
+                            <li onClick={goToAdminPanel}>
+                                <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Admin Panel</span>
+                            </li>
+                            <li onClick={handleLogout}>
+                                <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Sign out</span>
+                            </li>
+                        </>
+                    )}
+
                 </ul>
             </div>
             }

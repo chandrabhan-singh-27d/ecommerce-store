@@ -6,12 +6,12 @@ import { Outlet } from "react-router-dom";
 const AdminPanel = () => {
     const menuList = [
         {
-            path: 'create-category',
-            name: 'Create Category'
+            path: 'category',
+            name: 'Category'
         },
         {
-            path: 'create-product',
-            name: 'Create Product'
+            path: 'product',
+            name: 'Product'
         },
         {
             path: 'users',

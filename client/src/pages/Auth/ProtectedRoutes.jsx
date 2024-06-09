@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/auth"
 import { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import LoadingPage from "../../components/LoadingPage";
 import UserLogin from "@/pages/Auth/Login";
 import { useUserControls } from "@/context/UserControls";
@@ -8,8 +8,9 @@ import { useUserControls } from "@/context/UserControls";
 
 const ProtectedRoutes = () => {
     const API_ENDPOINT = import.meta.env.VITE_API;
+    const navigate = useNavigate();
     const [ok, setOk] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(true);
     /* Contexts */
     const { setIsLoginOpen } = useUserControls();
     const [auth] = useAuth();
@@ -24,25 +25,34 @@ const ProtectedRoutes = () => {
             })
             if (res.status === 401) {
                 localStorage.clear();
-                setIsLoginOpen(true)
+                setIsLoginOpen(true);
+                setIsLoading(false);
             } else if (res.status === 200) {
                 if (res.ok) {
                     setOk(true)
-                    setIsLoginOpen(false)
+                    setIsLoginOpen(false);
+                    setIsLoading(false);
                 } else {
                     setOk(false)
+                    setIsLoading(false)
                     alert("You don't have right access to this page.")
                 }
 
             }
         } catch (error) {
+            setIsLoading(false)
             console.log("Error in authenticating user")
         }
     }
 
     useEffect(() => {
-        if (auth?.token) authCheck();
-        else setIsLoginOpen(true)
+        if (auth?.token){ 
+            setIsLoading(true);
+            authCheck()
+        } else {
+            setIsLoginOpen(true)
+            setIsLoading(false)
+        }
     }, [auth?.token])
 
 
@@ -50,18 +60,17 @@ const ProtectedRoutes = () => {
     return (
         <div>
             <UserLogin />
-            {ok ? <Outlet /> : !auth.user ?
-                <div className="mt-4 px-3 py-2 h-[80vh] flex justify-center items-center">
-                    <div className="bg-white shadow-lg px-12 py-16 text-primary_color rounded-md">Please sign in to access the page.</div>
-                </div>
-                : (
-                    <>
-                        <div className="mt-4 px-3 py-2 h-[80vh] flex justify-center items-center">
-                            <div className="bg-white shadow-lg px-12 py-16 text-primary_color rounded-md">Please sign in to access the page.</div>
+            {isLoading && <LoadingPage />}
+            {!isLoading && ok ? <Outlet /> : (
+                <>
+                    <div className="mt-4 px-3 py-2 h-[80vh] flex justify-center items-center">
+                        <div className="bg-white shadow-lg px-12 py-16 text-primary_color rounded-md text-center">
+                            <div>Please sign in to access the page.</div>
+                            <div className="mt-5 text-black" >Visit <span className="cursor-pointer font-medium text-[#4285f4]" onClick={() => navigate('/')}>Home</span> instead.</div>
                         </div>
-                        <LoadingPage />
-                    </>
-                )}
+                    </div>
+                </>
+            )}
         </div>
     )
 
