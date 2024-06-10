@@ -69,8 +69,8 @@ const CreateCategory = () => {
                 getAllCategories();
             } else {
                 setNewCategory("");
-                alert(resData.message)
-                throw (resData.message)
+                alert(resData.message);
+                throw (resData.message);
             }
         } catch (error) {
             console.log(`Error in adding new category::${error}`)
@@ -80,7 +80,6 @@ const CreateCategory = () => {
     useEffect(() => {
         getAllCategories();
     }, [])
-
 
     return (
         <div className="w-full mr-4 px-2 overflow-y-auto">
