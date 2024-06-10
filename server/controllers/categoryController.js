@@ -7,7 +7,7 @@ export const createCategoryController = async (req, res) => {
     try {
         const { name } = req.body;
         if (!name) {
-            return res.status(401).send({
+            return res.status(422).send({
                 message: "Name is required"
             })
         }
@@ -16,7 +16,7 @@ export const createCategoryController = async (req, res) => {
 
         if (existingCategory) {
             return res.status(200).send({
-                success: true,
+                success: false,
                 message: "Category already exists"
             })
         }
