@@ -41,7 +41,7 @@ const CreateCategory = () => {
                 setIsTableLoading(false);
                 const { categories } = resData;
                 setCategoryData([...categories])
-            } else throw(resData.message)
+            } else throw (resData.message)
         } catch (error) {
             setIsTableLoading(false)
             console.log(`Error in getting all categories::${error}`)
@@ -57,13 +57,13 @@ const CreateCategory = () => {
                 method: 'POST',
                 headers: {
                     token: auth?.token,
-                    'Content-Type': 'application/json;charset=utf-8' 
+                    'Content-Type': 'application/json;charset=utf-8'
                 },
                 body: JSON.stringify(data)
             });
             const resData = await response.json();
 
-            if(resData?.success) {
+            if (resData?.success) {
                 setNewCategory("");
                 setIsTableLoading(true);
                 getAllCategories();
@@ -84,7 +84,11 @@ const CreateCategory = () => {
     return (
         <div className="w-full mr-4 px-2 overflow-y-auto">
             <AddInput inputData={newCategory} setInputData={setNewCategory} onFormSubmit={handleSubmit} />
-            {isTableLoading ? <LoadingPage /> : <Table headers={categoryHeaders} data={categoryData} />}
+            {isTableLoading ? <LoadingPage /> : <Table
+                headers={categoryHeaders}
+                data={categoryData}
+                lengthChange={true}
+            />}
         </div>
 
 
