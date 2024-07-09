@@ -1,7 +1,6 @@
 import { IconContext } from "react-icons";
 import { CiEdit, CiTrash } from "react-icons/ci";
 import { MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown, MdOutlineSearch } from "react-icons/md";
-
 import { useState, useRef, useEffect } from 'react';
 
 
@@ -10,6 +9,7 @@ const Table = ({ headers, data, lengthChange }) => {
     const [showLength, setShowLength] = useState(false);
     const lengthRefs = useRef([]);
     const lengthBoxRef = useRef(null);
+    const lengthMenu = useRef(null);
     const [slicedData, setSlicedData] = useState([]);
     const [pages, setPages] = useState([])
     const [selectedPage, setSelectedPage] = useState(1);
@@ -25,6 +25,7 @@ const Table = ({ headers, data, lengthChange }) => {
         setSelectedLength(changedLength);
         setShowLength(false);
     }
+
     const handleKeyDown = (e, index) => {
         const itemCount = lengths.length;
         if (e.key === 'ArrowDown') {
@@ -51,8 +52,9 @@ const Table = ({ headers, data, lengthChange }) => {
     } 
 
     const handleSearch = (e) => {
-        console.log(data)
+        // console.log(data)
     }
+    
     useEffect(() => {
         if (showLength) {
             lengthRefs.current[0].focus();
@@ -82,6 +84,25 @@ const Table = ({ headers, data, lengthChange }) => {
             setSlicedData(data.slice(prevPage * selectedLength, selectedPage * selectedLength))
         }
     }, [selectedPage, selectedLength, pages])
+
+    /* Close user control dropdown if clicked outside */
+    const handleClickOutside = (e) => {
+        const lengthBox = document.querySelector('#length-box')
+        if (lengthBox.contains(e.target) || lengthBoxRef.current.contains(e.target)) {
+            // ignore event if clicked on/inside length box
+            return
+        } else if (lengthMenu.current && !lengthMenu.current.contains(e.target)) {
+            // fire if not clicked on length box
+            setShowLength(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
         <div className='relative'>
@@ -147,13 +168,13 @@ const Table = ({ headers, data, lengthChange }) => {
                                 {!showLength && <span>{<MdOutlineKeyboardArrowDown />}</span>}
                                 {showLength && <span>{<MdOutlineKeyboardArrowUp />}</span>}
                             </div>
-                            <ul className="flex justify-end mx-2 gap-1">
+                            <ul className="flex justify-end mx-4 gap-1">
                                 {
                                     pages.map((page, idx) => (
                                         <li key={idx}>
                                             <button
                                                 type="button"
-                                                className={`px-3 py-1 rounded-md border border-gray-300 cursor-pointer ${page === selectedPage ? 'bg-primary_color text-white' : 'text-primary_color'}`}
+                                                className={`px-3 py-1 rounded-md border border-gray-300 focus:border-transparent cursor-pointer ${page === selectedPage ? 'bg-primary_color text-white' : 'text-primary_color'}`}
                                                 onClick={() => setSelectedPage(page)}
                                             >
                                                 {page}
@@ -166,13 +187,13 @@ const Table = ({ headers, data, lengthChange }) => {
                     )}
                 </div>
             </div>
-            {showLength && <ul id='length-box' className='absolute -bottom-[7.2rem] left-4 w-14 py-1 bg-white shadow-xl border border-gray-200 rounded-lg'>
+            {showLength && <ul id='length-box' ref={lengthMenu} className='absolute -bottom-[7.2rem] left-4 w-14 py-1 bg-white shadow-xl border border-gray-200 rounded-lg'>
                 {lengths.map((length, index) => (
                     <li
                         key={index}
                         ref={(el) => lengthRefs.current[index] = el}
                         tabIndex={0}
-                        className={`hover:bg-primary_color hover:text-white w-full inline-flex justify-center text-primary_color cursor-pointer focus:outline-none focus:bg-primary_color focus:text-white ${length === selectedLength ? 'bg-red-200' : ''}`}
+                        className={`hover:bg-primary_color hover:text-white w-full inline-flex justify-center text-primary_color cursor-pointer focus:outline-none ${length === selectedLength ? 'bg-primary_color focus:bg-primary_color text-white focus:text-white' : 'focus:bg-gray-100 focus:text-primary_color'}`}
                         onClick={() => setLength(length)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
                     >{length}</li>
