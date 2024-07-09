@@ -1,17 +1,21 @@
 import { IconContext } from "react-icons";
 import { CiEdit, CiTrash } from "react-icons/ci";
-import { MdOutlineKeyboardArrowUp } from "react-icons/md";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown, MdOutlineSearch } from "react-icons/md";
 
 import { useState, useRef, useEffect } from 'react';
 
 
 const Table = ({ headers, data, lengthChange }) => {
-    const lengths = [5, 10, 20, 50, 100];
     const [selectedLength, setSelectedLength] = useState(5);
     const [showLength, setShowLength] = useState(false);
     const lengthRefs = useRef([]);
     const lengthBoxRef = useRef(null);
+    const [slicedData, setSlicedData] = useState([]);
+    const [pages, setPages] = useState([])
+    const [selectedPage, setSelectedPage] = useState(1);
+    const [showSearch, setShowSearch] = useState(false);
+    const [searchValue, setSearchValue] = useState("")
+    const lengths = [5, 10, 20, 50, 100];
 
 
     const toggleLengthChange = () => {
@@ -39,14 +43,64 @@ const Table = ({ headers, data, lengthChange }) => {
         }
     };
 
+    const toggleSearchBar = () => {
+        setShowSearch(prevState => !prevState);
+        if(!showSearch) {
+            setSearchValue(() => "");
+        }
+    } 
+
+    const handleSearch = (e) => {
+        console.log(data)
+    }
     useEffect(() => {
         if (showLength) {
             lengthRefs.current[0].focus();
         }
     }, [showLength]);
 
+    useEffect(() => {
+        const numberOfPages = Math.ceil(data.length / selectedLength);
+        let temp = [];
+        for (let i = 1; i <= numberOfPages; i++) {
+            temp.push(i)
+        }
+        if (!temp.includes(selectedPage)) setSelectedPage(temp[temp.length - 1])
+        setPages(temp);
+    }, [selectedLength])
+
+    useEffect(() => {
+        if (pages.length === 1) {
+            setSlicedData(data)
+        } else if (selectedPage === 1) {
+            setSlicedData(data.slice(0, selectedPage * selectedLength))
+        } else if (selectedPage === pages[pages.length - 1]) {
+            const prevPage = selectedPage - 1;
+            setSlicedData(data.slice(prevPage * selectedLength, data.length))
+        } else {
+            const prevPage = selectedPage - 1;
+            setSlicedData(data.slice(prevPage * selectedLength, selectedPage * selectedLength))
+        }
+    }, [selectedPage, selectedLength, pages])
+
     return (
         <div className='relative'>
+            <div className="flex justify-end items-center gap-1 my-2">
+                {showSearch && <input
+                    type="search"
+                    placeholder="Search table"
+                    className="border border-gray-300 rounded focus:ring-1 focus:ring-primary_color focus:outline-none focus:border-transparent px-2 py-0.5" 
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    onKeyDown={(e) => handleSearch(e)}
+                    />}
+                <div 
+                className="text-white bg-primary_color py-[5px] px-3 font-bold text-xl rounded cursor-pointer"
+                onClick={toggleSearchBar}
+                >
+                    <MdOutlineSearch />
+                </div>
+            </div>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg mb-4">
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -57,7 +111,7 @@ const Table = ({ headers, data, lengthChange }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.map((row) => (
+                        {slicedData?.map((row) => (
                             <tr key={row.uID} className="bg-white border-b hover:bg-gray-50">
                                 {headers?.map((column) => {
                                     if (column.key === 'edit') {
@@ -83,14 +137,31 @@ const Table = ({ headers, data, lengthChange }) => {
                 </table>
                 <div className='my-2'>
                     {lengthChange && (
-                        <div
-                            ref={lengthBoxRef}
-                            tabIndex={0}
-                            className='border border-gray-300 focus:ring-1 focus:ring-primary_color focus:outline-none focus:border-transparent w-14 mx-4 my-2 px-2 py-1 inline-flex gap-1 justify-center items-center rounded-md text-primary_color cursor-pointer'
-                            onClick={toggleLengthChange}>
-                            <span>{selectedLength}</span>
-                            {!showLength && <span>{<MdOutlineKeyboardArrowDown />}</span>}
-                            {showLength && <span>{<MdOutlineKeyboardArrowUp />}</span>}
+                        <div className="flex justify-between">
+                            <div
+                                ref={lengthBoxRef}
+                                tabIndex={0}
+                                className='border border-gray-300 focus:ring-1 focus:ring-primary_color focus:outline-none focus:border-transparent w-14 mx-4 my-2 px-2 py-1 inline-flex gap-1 justify-center items-center rounded-md text-primary_color cursor-pointer'
+                                onClick={toggleLengthChange}>
+                                <span>{selectedLength}</span>
+                                {!showLength && <span>{<MdOutlineKeyboardArrowDown />}</span>}
+                                {showLength && <span>{<MdOutlineKeyboardArrowUp />}</span>}
+                            </div>
+                            <ul className="flex justify-end mx-2 gap-1">
+                                {
+                                    pages.map((page, idx) => (
+                                        <li key={idx}>
+                                            <button
+                                                type="button"
+                                                className={`px-3 py-1 rounded-md border border-gray-300 cursor-pointer ${page === selectedPage ? 'bg-primary_color text-white' : 'text-primary_color'}`}
+                                                onClick={() => setSelectedPage(page)}
+                                            >
+                                                {page}
+                                            </button>
+                                        </li>
+                                    ))
+                                }
+                            </ul>
                         </div>
                     )}
                 </div>
