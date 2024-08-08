@@ -2,21 +2,48 @@ import { IconContext } from "react-icons";
 import { CiEdit, CiTrash } from "react-icons/ci";
 import { MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown, MdOutlineSearch } from "react-icons/md";
 import { useState, useRef, useEffect } from 'react';
+import Fuse from "fuse.js";
 
 
-const Table = ({ headers, data, lengthChange }) => {
+const Table = ({ headers, data, lengthChange, searching }) => {
+    /* Props types
+        headers: [
+            {
+                key: "",
+                label: ""
+            }
+        ],
+        data: [
+            {
+                "uID": "",
+                "header_key": "",
+                "header_key": ""
+            }
+        ],
+        lengthChange: true/false,
+        searching: {
+            enable: true/false,
+            searchKeys: ["key1", "key2"]
+        }
+    */
     const [selectedLength, setSelectedLength] = useState(5);
     const [showLength, setShowLength] = useState(false);
     const lengthRefs = useRef([]);
     const lengthBoxRef = useRef(null);
     const lengthMenu = useRef(null);
     const [slicedData, setSlicedData] = useState([]);
+    const [tableData, setTableData] = useState(data);
     const [pages, setPages] = useState([])
     const [selectedPage, setSelectedPage] = useState(1);
     const [showSearch, setShowSearch] = useState(false);
     const [searchValue, setSearchValue] = useState("")
     const lengths = [5, 10, 20, 50, 100];
-
+    const [searchError, setSearchError] = useState("");
+    const fuse = new Fuse(data, {
+        keys: searching.enable ? searching.searchKeys : [],
+        shouldSort: true,
+        threshold: 0.2,
+    });
 
     const toggleLengthChange = () => {
         setShowLength(prevState => !prevState)
@@ -46,15 +73,27 @@ const Table = ({ headers, data, lengthChange }) => {
 
     const toggleSearchBar = () => {
         setShowSearch(prevState => !prevState);
-        if(!showSearch) {
+        if (!showSearch) {
             setSearchValue(() => "");
         }
-    } 
+    }
 
     const handleSearch = (e) => {
-        // console.log(data)
+        let queryVal = e.target.value
+        setSearchValue(queryVal);
+        setSearchError("");
+        if (queryVal === '') {
+            setTableData([]);
+        } else {
+            let result = []
+            result = fuse.search(queryVal).map(searchedResult => searchedResult.item)
+            if (!result.length) {
+                setSearchError("No Data Available for the search query.")
+            }
+            setTableData(result);
+        }
     }
-    
+
     useEffect(() => {
         if (showLength) {
             lengthRefs.current[0].focus();
@@ -62,28 +101,47 @@ const Table = ({ headers, data, lengthChange }) => {
     }, [showLength]);
 
     useEffect(() => {
-        const numberOfPages = Math.ceil(data.length / selectedLength);
+        const paginationDataLength = tableData.length || data.length;
+        const numberOfPages = Math.ceil(paginationDataLength / selectedLength);
         let temp = [];
         for (let i = 1; i <= numberOfPages; i++) {
             temp.push(i)
         }
         if (!temp.includes(selectedPage)) setSelectedPage(temp[temp.length - 1])
         setPages(temp);
-    }, [selectedLength])
+    }, [selectedLength, searchValue])
 
     useEffect(() => {
-        if (pages.length === 1) {
-            setSlicedData(data)
-        } else if (selectedPage === 1) {
-            setSlicedData(data.slice(0, selectedPage * selectedLength))
-        } else if (selectedPage === pages[pages.length - 1]) {
-            const prevPage = selectedPage - 1;
-            setSlicedData(data.slice(prevPage * selectedLength, data.length))
+        if (tableData.length) {
+            if (pages.length === 1) {
+                setSlicedData(tableData)
+            } else if (selectedPage === 1) {
+                setSlicedData(tableData.slice(0, selectedPage * selectedLength))
+            } else if (selectedPage === pages[pages.length - 1]) {
+                const prevPage = selectedPage - 1;
+                setSlicedData(tableData.slice(prevPage * selectedLength, data.length))
+            } else {
+                const prevPage = selectedPage - 1;
+                setSlicedData(tableData.slice(prevPage * selectedLength, selectedPage * selectedLength))
+            }
         } else {
-            const prevPage = selectedPage - 1;
-            setSlicedData(data.slice(prevPage * selectedLength, selectedPage * selectedLength))
+            if (searchError) {
+                setSlicedData([])
+                return;
+            };
+            if (pages.length === 1) {
+                setSlicedData(data)
+            } else if (selectedPage === 1) {
+                setSlicedData(data.slice(0, selectedPage * selectedLength))
+            } else if (selectedPage === pages[pages.length - 1]) {
+                const prevPage = selectedPage - 1;
+                setSlicedData(data.slice(prevPage * selectedLength, data.length))
+            } else {
+                const prevPage = selectedPage - 1;
+                setSlicedData(data.slice(prevPage * selectedLength, selectedPage * selectedLength))
+            }
         }
-    }, [selectedPage, selectedLength, pages])
+    }, [selectedPage, selectedLength, pages, searchValue])
 
     /* Close user control dropdown if clicked outside */
     const handleClickOutside = (e) => {
@@ -106,22 +164,21 @@ const Table = ({ headers, data, lengthChange }) => {
 
     return (
         <div className='relative'>
-            <div className="flex justify-end items-center gap-1 my-2">
+            {searching.enable && <div className="flex justify-end items-center gap-1 my-2">
                 {showSearch && <input
                     type="search"
                     placeholder="Search table"
-                    className="border border-gray-300 rounded focus:ring-1 focus:ring-primary_color focus:outline-none focus:border-transparent px-2 py-0.5" 
+                    className="border border-gray-300 rounded focus:ring-1 focus:ring-primary_color focus:outline-none focus:border-transparent px-2 py-0.5"
                     value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                    onKeyDown={(e) => handleSearch(e)}
-                    />}
-                <div 
-                className="text-white bg-primary_color py-[5px] px-3 font-bold text-xl rounded cursor-pointer"
-                onClick={toggleSearchBar}
+                    onChange={(e) => handleSearch(e)}
+                />}
+                <div
+                    className="text-white bg-primary_color py-[5px] px-3 font-bold text-xl rounded cursor-pointer"
+                    onClick={toggleSearchBar}
                 >
                     <MdOutlineSearch />
                 </div>
-            </div>
+            </div>}
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg mb-4">
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -132,7 +189,7 @@ const Table = ({ headers, data, lengthChange }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {slicedData?.map((row) => (
+                        {slicedData.length ? slicedData.map((row) => (
                             <tr key={row.uID} className="bg-white border-b hover:bg-gray-50">
                                 {headers?.map((column) => {
                                     if (column.key === 'edit') {
@@ -152,10 +209,14 @@ const Table = ({ headers, data, lengthChange }) => {
                                     }
                                 })}
                             </tr>
-                        ))}
-
+                        )) : (
+                            <tr className="w-full">
+                                <td className="text-center w-full py-2 text-red-700">{searchError}</td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
+                {!searchError && (<>
                 <div className='my-2'>
                     {lengthChange && (
                         <div className="flex justify-between">
@@ -186,8 +247,9 @@ const Table = ({ headers, data, lengthChange }) => {
                         </div>
                     )}
                 </div>
+                </>)}
             </div>
-            {showLength && <ul id='length-box' ref={lengthMenu} className='absolute -bottom-[7.2rem] left-4 w-14 py-1 bg-white shadow-xl border border-gray-200 rounded-lg'>
+            {showLength && !searchError && <ul id='length-box' ref={lengthMenu} className='absolute -bottom-[7.2rem] left-4 w-14 py-1 bg-white shadow-xl border border-gray-200 rounded-lg'>
                 {lengths.map((length, index) => (
                     <li
                         key={index}

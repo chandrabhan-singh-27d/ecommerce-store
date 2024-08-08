@@ -22,7 +22,13 @@ const AdminRoutes = () => {
                     token: auth?.token
                 }
             })
+            const jsonRes = await res.json()
             if (res.status === 401) {
+                if(jsonRes.error.message === "jwt expired") {
+                    localStorage.removeItem('userAuth');
+                    location.reload()
+                    return;
+                }
                 setOk(false);
                 setIsLoading(() => false)
             } else if (res.status === 200) {
@@ -62,7 +68,7 @@ const AdminRoutes = () => {
                 <div className="mt-4 px-3 py-2 h-[80vh] flex justify-center items-center">
                     <div className="bg-white shadow-lg px-12 py-16 text-primary_color rounded-md text-center">
                         {!auth.user ? <div>Please sign in to access the page.</div> : (
-                            <div>Please contact admin to access the page. <br /> OR <br /> In case of visiting the platform after 24 hours, sign out and sign in again.</div>
+                            <div>Please contact admin to access the page.</div>
                         )}
                         <div className="mt-5 text-black" >Visit <span className="cursor-pointer font-medium text-[#4285f4]" onClick={() => navigate('/')}>Home</span> instead.</div>
                     </div>

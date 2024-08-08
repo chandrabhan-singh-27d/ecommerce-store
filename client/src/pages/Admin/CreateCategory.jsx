@@ -88,6 +88,10 @@ const CreateCategory = () => {
                 headers={categoryHeaders}
                 data={categoryData}
                 lengthChange={true}
+                searching={{
+                    enable: true,
+                    searchKeys: ['name', 'slug']
+                }}
             />}
         </div>
 
