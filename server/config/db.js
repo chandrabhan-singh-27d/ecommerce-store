@@ -3,7 +3,12 @@ import mongoose from 'mongoose';
 
 const connectToDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGO_URI);
+        let url = process.env.MONGO_URI;
+        if(!url) {
+            console.log("can't find mongo URI, setting up a local connection")
+            url = "localhost:27017";    
+        }
+        const conn = await mongoose.connect(url);
         console.log(`Connected to mongodb database ${conn.connection.host}`)
     } catch (error) {
         console.log(`Error in connecting to db ${error}`)
