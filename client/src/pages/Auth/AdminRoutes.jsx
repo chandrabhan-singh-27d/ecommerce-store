@@ -1,8 +1,6 @@
 import { useAuth } from "@/context/auth"
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import UserLogin from "@/pages/Auth/Login";
-import { useUserControls } from "@/context/UserControls";
 import LoadingPage from "@/components/LoadingPage";
 
 const AdminRoutes = () => {
@@ -11,7 +9,6 @@ const AdminRoutes = () => {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     /* Contexts */
-    const { setIsLoginOpen } = useUserControls();
     const [auth] = useAuth();
 
     const authCheck = async () => {
@@ -24,18 +21,17 @@ const AdminRoutes = () => {
             })
             const jsonRes = await res.json()
             if (res.status === 401) {
-                if(jsonRes.error.message === "jwt expired") {
-                    localStorage.removeItem('userAuth');
-                    location.reload()
+                if (jsonRes.error.message === "jwt expired") {
+                    localStorage.clear();
+                    navigate('/login')
                     return;
                 }
                 setOk(false);
-                setIsLoading(() => false)
+                setIsLoading(false)
             } else if (res.status === 200) {
                 if (res.ok) {
                     setOk(true)
                     setIsLoading(() => false)
-                    setIsLoginOpen(false)
                 } else {
                     setOk(false)
                     setIsLoading(() => false)
@@ -54,7 +50,7 @@ const AdminRoutes = () => {
             setIsLoading(true);
             authCheck()
         } else {
-            setIsLoginOpen(true)
+            navigate('/login')
             setIsLoading(false)
         }
     }, [auth?.token])
@@ -62,7 +58,6 @@ const AdminRoutes = () => {
 
     return (
         <div>
-            <UserLogin />
             {isLoading && <LoadingPage />}
             {!isLoading && ok ? <Outlet /> : (
                 <div className="mt-4 px-3 py-2 h-[80vh] flex justify-center items-center">

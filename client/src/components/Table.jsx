@@ -33,10 +33,10 @@ const Table = ({ headers, data, lengthChange, searching }) => {
     const lengthMenu = useRef(null);
     const [slicedData, setSlicedData] = useState([]);
     const [tableData, setTableData] = useState(data);
-    const [pages, setPages] = useState([])
+    const [pages, setPages] = useState([]);
     const [selectedPage, setSelectedPage] = useState(1);
     const [showSearch, setShowSearch] = useState(false);
-    const [searchValue, setSearchValue] = useState("")
+    const [searchValue, setSearchValue] = useState("");
     const lengths = [5, 10, 20, 50, 100];
     const [searchError, setSearchError] = useState("");
     const fuse = new Fuse(data, {

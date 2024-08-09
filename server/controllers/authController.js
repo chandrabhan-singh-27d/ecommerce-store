@@ -37,10 +37,16 @@ export const registerController = async (req, res) => {
 
         const user = await new userModel({ name, email, password: hashedPassword, phone, address, securityQuestion }).save();
 
+        // token
+        const token = await JWT.sign({ _id: user._id }, process.env.JWT_KEY, { expiresIn: '24h' });
         res.status(201).json({
             success: true,
             message: 'User registered successfully',
-            user
+            user: {
+                name: user.name,
+                email: user.email
+            },
+            token
         })
 
     } catch (error) {
@@ -129,11 +135,19 @@ export const resetPasswordController = async (req, res) => {
         }
 
         const hashedPassword = await hashPassword(newPassword);
-        await userModel.findByIdAndUpdate(user._id, {password: hashedPassword});
+        const updatedUser = await userModel.findByIdAndUpdate(user._id, {password: hashedPassword});
 
+        // token
+        const token = await JWT.sign({ _id: updatedUser._id }, process.env.JWT_KEY, { expiresIn: '24h' });
+        
         res.status(200).send({
             success: true,
-            message: "Password reset successfully"
+            message: "Password reset successfully",
+            user: {
+                name: updatedUser.name,
+                email: updatedUser.email
+            },
+            token
         })
 
     } catch (error) {

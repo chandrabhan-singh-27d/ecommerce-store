@@ -2,8 +2,6 @@ import { useAuth } from "@/context/auth"
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import LoadingPage from "../../components/LoadingPage";
-import UserLogin from "@/pages/Auth/Login";
-import { useUserControls } from "@/context/UserControls";
 
 
 const ProtectedRoutes = () => {
@@ -12,7 +10,6 @@ const ProtectedRoutes = () => {
     const [ok, setOk] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     /* Contexts */
-    const { setIsLoginOpen } = useUserControls();
     const [auth] = useAuth();
 
     const authCheck = async () => {
@@ -23,14 +20,20 @@ const ProtectedRoutes = () => {
                     token: auth?.token
                 }
             })
+
+            const jsonRes = await res.json()
             if (res.status === 401) {
-                localStorage.clear();
-                setIsLoginOpen(true);
+                if(jsonRes.error.message === "jwt expired") {
+                    localStorage.clear();
+                    navigate('/login')
+                    return;
+                }
+                setOk(false);
                 setIsLoading(false);
+                navigate('/login')
             } else if (res.status === 200) {
                 if (res.ok) {
                     setOk(true)
-                    setIsLoginOpen(false);
                     setIsLoading(false);
                 } else {
                     setOk(false)
@@ -50,7 +53,6 @@ const ProtectedRoutes = () => {
             setIsLoading(true);
             authCheck()
         } else {
-            setIsLoginOpen(true)
             setIsLoading(false)
         }
     }, [auth?.token])
@@ -59,7 +61,6 @@ const ProtectedRoutes = () => {
 
     return (
         <div>
-            <UserLogin />
             {isLoading && <LoadingPage />}
             {!isLoading && ok ? <Outlet /> : (
                 <>

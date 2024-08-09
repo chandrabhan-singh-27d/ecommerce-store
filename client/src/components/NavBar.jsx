@@ -7,8 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import logo from "../assets/logo_new/svg/logo-no-background.svg";
 import { useRef, useState, useEffect } from "react";
 import { useAuth } from "@/context/auth";
-import UserLogin from "@/pages/Auth/Login";
-import { useUserControls } from "@/context/UserControls";
 
 const NavBar = () => {
     //hooks calls
@@ -16,7 +14,6 @@ const NavBar = () => {
     const [isUserControlOpen, setIsUserControlOpen] = useState(false);
     const userControl = useRef(null);
 
-    const { isLoginOpen, setIsLoginOpen } = useUserControls();
     const [auth, setAuth] = useAuth();
 
     //Navigation items
@@ -73,8 +70,12 @@ const NavBar = () => {
         setIsUserControlOpen(false);
     }
     const handleLogin = () => {
+        navigateTo('/login')
         setIsUserControlOpen(false);
-        setIsLoginOpen(true);
+    }
+    const handleSignUp = () => {
+        navigateTo('/register')
+        setIsUserControlOpen(false);
     }
 
     const handleLogout = () => {
@@ -115,7 +116,9 @@ const NavBar = () => {
                             <li onClick={handleLogin}>
                                 <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Sign In</span>
                             </li>
-
+                            <li onClick={handleSignUp}>
+                                <span className="cursor-pointer block px-4 py-2 hover:bg-gray-100">Sign Up</span>
+                            </li>
                         </>
                     ) : (
                         <>
@@ -134,7 +137,6 @@ const NavBar = () => {
                 </ul>
             </div>
             }
-            {isLoginOpen && <UserLogin />}
         </header>
     );
 }

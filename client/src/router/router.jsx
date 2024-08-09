@@ -13,6 +13,8 @@ import CreateProducts from '@/pages/Admin/CreateProducts';
 import ManageUsers from '@/pages/Admin/ManageUsers';
 import Profile from '@/pages/User/Profile';
 import Orders from '@/pages/User/Orders';
+import UserLogin from '@/pages/Auth/Login';
+import UserRegister from '@/pages/Auth/Register';
 
 
 
@@ -28,6 +30,14 @@ const router = createBrowserRouter([
             {
                 path: "about",
                 element: <About />
+            },
+            {
+                path: "login",
+                element: <UserLogin />
+            },
+            {
+                path: "register",
+                element: <UserRegister />
             },
             {
                 path: "",
