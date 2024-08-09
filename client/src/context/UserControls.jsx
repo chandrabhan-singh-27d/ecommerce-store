@@ -7,6 +7,7 @@ const UserControlsProvider = ({ children }) => {
     const [isRegisterOpen, setIsRegisterOpen] = useState(false);
     const [isResetOpen, setIsResetOpen] = useState(false);
 
+    console.log(isLoginOpen, isRegisterOpen)
     return <UserControlsContext.Provider value={{
         isLoginOpen,
         setIsLoginOpen,
