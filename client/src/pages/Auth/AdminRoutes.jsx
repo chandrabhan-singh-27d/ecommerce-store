@@ -22,9 +22,9 @@ const AdminRoutes = () => {
             const jsonRes = await res.json()
             if (res.status === 401) {
                 if (jsonRes.error.message === "jwt expired") {
+                    alert("Session time out, logging off.")
                     localStorage.clear();
-                    // location.reload()
-                    navigate('/login')
+                    location.href = '/login';
                 }
                 setOk(false);
                 setIsLoading(false)
@@ -50,7 +50,7 @@ const AdminRoutes = () => {
             setIsLoading(true);
             authCheck()
         } else {
-            navigate('/login')
+            location.href = "/login"
             setIsLoading(false)
         }
     }, [auth?.token])

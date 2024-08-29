@@ -12,7 +12,7 @@ export const requireSignIn = async (req, res, next) => {
         console.log(error)
         res.status(401).json({
             success: false,
-            message: "Error in requireSignIn",
+            message: "Session Expired or Unauthorized user",
             error
         })
     }

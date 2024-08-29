@@ -3,6 +3,7 @@ import SelectInput from "@/components/SelectInput";
 import AddInput from "@/components/AddInput";
 import Button from "@/components/Button";
 import { useAuth } from "@/context/auth";
+import { customFetch } from "@/utils/fetchUtil";
 
 const CreateProducts = () => {
   const API_ENDPOINT = import.meta.env.VITE_API;
@@ -65,7 +66,7 @@ const CreateProducts = () => {
       reqData.append("image", productImage);
       reqData.append("shipping", Boolean(shipping.value));
 
-      const response = await fetch(url, {
+      const response = await customFetch(url, {
         method: 'POST',
         headers: {
           token: auth?.token,

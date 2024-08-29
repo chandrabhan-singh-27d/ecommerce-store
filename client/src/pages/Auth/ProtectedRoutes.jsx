@@ -24,13 +24,12 @@ const ProtectedRoutes = () => {
             const jsonRes = await res.json()
             if (res.status === 401) {
                 if(jsonRes.error.message === "jwt expired") {
+                    alert("Session time out, logging off.")
                     localStorage.clear();
-                    navigate('/login')
-                    return;
+                    location.href = '/login';
                 }
                 setOk(false);
                 setIsLoading(false);
-                navigate('/login')
             } else if (res.status === 200) {
                 if (res.ok) {
                     setOk(true)
@@ -53,6 +52,7 @@ const ProtectedRoutes = () => {
             setIsLoading(true);
             authCheck()
         } else {
+            location.href = "/login"
             setIsLoading(false)
         }
     }, [auth?.token])

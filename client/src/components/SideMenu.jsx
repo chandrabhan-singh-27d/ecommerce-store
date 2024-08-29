@@ -4,6 +4,7 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom"
 const SideMenu = ({ menuList }) => {
     const navigate = useNavigate();
     const currentLocation = useLocation();
+    console.log(currentLocation)
     const currentPathIndex = menuList.findIndex(menu => currentLocation.pathname.includes(menu.path));
     const [activeMenu, setActiveMenu] = useState(currentPathIndex !== -1 ? currentPathIndex : 0);
 

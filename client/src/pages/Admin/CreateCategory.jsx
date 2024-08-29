@@ -1,9 +1,10 @@
+import { useEffect, useState } from "react";
+import { useAuth } from "@/context/auth";
+import { customFetch } from "@/utils/fetchUtil";
 import AddInput from "@/components/AddInput";
 import Button from "@/components/Button";
 import LoadingPage from "@/components/LoadingPage";
-import Table from "@/components/Table"
-import { useAuth } from "@/context/auth";
-import { useEffect, useState } from "react"
+import Table from "@/components/Table";
 
 const CreateCategory = () => {
     const API_ENDPOINT = import.meta.env.VITE_API;
@@ -61,7 +62,8 @@ const CreateCategory = () => {
             const data = {
                 name: newCategory
             }
-            const response = await fetch(`${API_ENDPOINT}/api/v1/category/create-category`, {
+            
+            const response = await customFetch(`${API_ENDPOINT}/api/v1/category/create-category`, {
                 method: 'POST',
                 headers: {
                     token: auth?.token,
@@ -98,7 +100,7 @@ const CreateCategory = () => {
                     labelText="Add Category"
                     parentClassNames="w-96"
                 />
-                <Button type="submit" >Submit</Button>
+                <Button type="submit" parentClassNames="mt-7">Submit</Button>
             </form>
             {isTableLoading ? <LoadingPage /> : <Table
                 headers={categoryHeaders}
