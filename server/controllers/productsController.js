@@ -1,12 +1,14 @@
 import productModel from "#root/models/productModel.js";
+import categoryModel from "#root/models/categoryModel.js";
 import slugify from 'slugify'
 import { readFileSync } from 'fs'
 
 export const createProductController = async (req, res) => {
     try {
-        const { name, slug, description, price, category, quantity, shipping } = req.fields;
+        const { name, description, price, category, quantity } = req.fields;
         const { image } = req.files;
 
+        console.log("checking request fields", req.fields, req.files)
         // Validtions
         switch (true) {
             case !name:
@@ -44,7 +46,9 @@ export const createProductController = async (req, res) => {
                 break;
         }
 
-        const product = new productModel({ ...req.fields, slug: slugify(name) });
+        const searchedCategory = await categoryModel.findOne({ uID: category }).select('_id');
+
+        const product = new productModel({ ...req.fields, slug: slugify(name), category: searchedCategory });
 
         if (image) {
             product.image.data = readFileSync(image.path);
