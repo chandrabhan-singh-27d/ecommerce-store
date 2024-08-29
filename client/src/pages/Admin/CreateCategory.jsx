@@ -1,4 +1,5 @@
 import AddInput from "@/components/AddInput";
+import Button from "@/components/Button";
 import LoadingPage from "@/components/LoadingPage";
 import Table from "@/components/Table"
 import { useAuth } from "@/context/auth";
@@ -48,7 +49,14 @@ const CreateCategory = () => {
         }
     }
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!newCategory) {
+            alert("Please add value to create category");
+            return;
+        }
+
         try {
             const data = {
                 name: newCategory
@@ -83,7 +91,15 @@ const CreateCategory = () => {
 
     return (
         <div className="w-full mr-4 px-2 overflow-y-auto">
-            <AddInput inputData={newCategory} setInputData={setNewCategory} onFormSubmit={handleSubmit} />
+            <form onSubmit={handleSubmit} className="flex items-center gap-3">
+                <AddInput
+                    inputData={newCategory}
+                    setInputData={setNewCategory}
+                    labelText="Add Category"
+                    parentClassNames="w-96"
+                />
+                <Button type="submit" parentClassNames="mt-4" >Submit</Button>
+            </form>
             {isTableLoading ? <LoadingPage /> : <Table
                 headers={categoryHeaders}
                 data={categoryData}
