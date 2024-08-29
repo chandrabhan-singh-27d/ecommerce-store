@@ -3,17 +3,13 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom"
 
 const SideMenu = ({ menuList }) => {
     const navigate = useNavigate();
-    const [activeMenu, setActiveMenu] = useState(null);
     const currentLocation = useLocation();
+    const currentPathIndex = menuList.findIndex(menu => currentLocation.pathname.includes(menu.path));
+    const [activeMenu, setActiveMenu] = useState(currentPathIndex !== -1 ? currentPathIndex : 0);
 
 
     useEffect(() => {
-        (async() => {
-            const currentPath = await menuList.findIndex(menu => currentLocation.pathname.includes(menu.path));
-            if(currentPath) setActiveMenu(() => currentPath) 
-            else setActiveMenu(() => 0);
-            navigate(menuList[activeMenu].path);
-        })()
+        navigate(menuList[activeMenu].path);
     }, []);
 
     const setCurrentMenu = (index, path) => {

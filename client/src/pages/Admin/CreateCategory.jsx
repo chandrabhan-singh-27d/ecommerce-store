@@ -98,7 +98,7 @@ const CreateCategory = () => {
                     labelText="Add Category"
                     parentClassNames="w-96"
                 />
-                <Button type="submit" parentClassNames="mt-4" >Submit</Button>
+                <Button type="submit" >Submit</Button>
             </form>
             {isTableLoading ? <LoadingPage /> : <Table
                 headers={categoryHeaders}

@@ -23,8 +23,8 @@ const AdminRoutes = () => {
             if (res.status === 401) {
                 if (jsonRes.error.message === "jwt expired") {
                     localStorage.clear();
+                    // location.reload()
                     navigate('/login')
-                    return;
                 }
                 setOk(false);
                 setIsLoading(false)

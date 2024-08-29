@@ -94,12 +94,6 @@ const UserLogin = () => {
         }
     }
 
-    useEffect(() => {
-        if(auth.token) {
-            navigateTo(-1)
-        }
-    }, [auth])
-
     const redirectToRegister = () => {
         navigateTo('/register');
     }
