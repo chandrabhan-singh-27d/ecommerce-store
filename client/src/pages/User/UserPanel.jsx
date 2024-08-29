@@ -18,8 +18,8 @@ const UserPanel = () => {
     return (
         <>
             <SEO title={'User - ecommerce App'} description={'User Panel to manage Profile and Orders'} keywords={''} author={''} />
-            <div className="flex gap-3">
                 <SideMenu menuList={menuList} />
+            <div className="ml-[11%] mr-4">
                 <Outlet />
             </div>
         </>

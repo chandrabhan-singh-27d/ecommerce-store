@@ -122,6 +122,7 @@ const CreateProducts = () => {
             placeholderText="Enter product name"
             required={true}
             parentClassNames="w-full my-2"
+            containerClassNames="w-full"
           />
           <textarea
             value={productDescription}
@@ -135,6 +136,7 @@ const CreateProducts = () => {
             placeholderText="Enter product price"
             required={true}
             parentClassNames="w-full my-2"
+            containerClassNames="w-full"
           />
           <AddInput
             inputData={productQuantity}
@@ -142,6 +144,7 @@ const CreateProducts = () => {
             placeholderText="Enter product quantity"
             required={true}
             parentClassNames="w-full my-2"
+            containerClassNames="w-full"
           />
           <SelectInput
             onSelectChange={setShipping}
