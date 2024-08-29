@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "@/context/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -46,7 +46,12 @@ const UserLogin = () => {
 
                 localStorage.setItem('userAuth', JSON.stringify(resData));
                 alert(resData.message);
-                navigateTo(-1)
+                if(sessionStorage.previousPath) {
+                    location.href = sessionStorage.previousPath;
+                } else {
+                    navigateTo(-1);
+                    // location.href = "/"
+                }
             } else {
                 alert(resData.message)
             }

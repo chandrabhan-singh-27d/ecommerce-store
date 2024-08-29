@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/auth"
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import LoadingPage from "@/components/LoadingPage";
 
 const AdminRoutes = () => {
@@ -8,6 +8,7 @@ const AdminRoutes = () => {
     const [ok, setOk] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
+    const currentLocation = useLocation();
     /* Contexts */
     const [auth] = useAuth();
 
@@ -24,6 +25,7 @@ const AdminRoutes = () => {
                 if (jsonRes.error.message === "jwt expired") {
                     alert("Session time out, logging off.")
                     localStorage.clear();
+                    sessionStorage.setItem('previousPath', currentLocation.pathname);
                     location.href = '/login';
                 }
                 setOk(false);
