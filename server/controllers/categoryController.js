@@ -27,7 +27,7 @@ export const createCategoryController = async (req, res) => {
             slug: slugify(name)
         }).save()
 
-        const savedCategory = await categoryModel.findOne({uID: category.uID}).select("uID name slug -_id");
+        const savedCategory = await categoryModel.findOne({ uID: category.uID }).select("uID name slug -_id");
         return res.status(201).send({
             success: true,
             message: "New category created",
@@ -47,10 +47,12 @@ export const updateCategoryController = async (req, res) => {
     try {
 
         const { name } = req.body;
-        const { id } = req.params;
+        const { uID } = req.params;
 
-        const category = await categoryModel.findByIdAndUpdate(
-            id,
+        const category = await categoryModel.findOneAndUpdate(
+            {
+                uID: uID
+            },
             {
                 name,
                 slug: slugify(name)
@@ -63,7 +65,7 @@ export const updateCategoryController = async (req, res) => {
 
         res.status(200).send({
             success: true,
-            message: "Category updated successfully",
+            message: `Category::${category.name} updated successfully`,
             category
         })
     } catch (error) {
@@ -97,9 +99,9 @@ export const getAllCategoriesController = async (req, res) => {
 
 export const getSingleCategoryController = async (req, res) => {
     try {
-        const {slug} = req.params;
+        const { slug } = req.params;
 
-        const filteredCategory = await categoryModel.findOne({slug:slug}).select("uID name slug -_id");
+        const filteredCategory = await categoryModel.findOne({ slug: slug }).select("uID name slug -_id");
 
         res.status(200).send({
             success: true,
@@ -118,13 +120,14 @@ export const getSingleCategoryController = async (req, res) => {
 
 export const deleteCategory = async (req, res) => {
     try {
-        const {uID} = req.params
+        const { uID } = req.params
 
-        const deletedCategory = await categoryModel.findByOneAndDelete({uID}).select("uID name slug -_id");
+        console.log("checking uID", uID)
+        const deletedCategory = await categoryModel.findOneAndDelete({ uID }).select("uID name slug -_id");
 
         res.status(200).send({
             success: true,
-            message: "Requested category is deleted",
+            message: `Category::${deletedCategory.name} is deleted`,
             deletedCategory
         })
     } catch (error) {

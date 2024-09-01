@@ -17,7 +17,7 @@ const router = Router();
 router.post('/create-category', requireSignIn, isAdmin, createCategoryController);
 
 // Update Category
-router.put('/update-category/:id', requireSignIn, isAdmin, updateCategoryController)
+router.put('/update-category/:uID', requireSignIn, isAdmin, updateCategoryController)
 
 // Get all categories
 router.get('/categories', getAllCategoriesController)

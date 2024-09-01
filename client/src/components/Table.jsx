@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 import Fuse from "fuse.js";
 
 
-const Table = ({ headers, data, lengthChange, searching }) => {
+const Table = ({ headers, data, lengthChange, searching, onRowEdit, onRowDelete }) => {
     /* Props types
         headers: [
             {
@@ -92,6 +92,14 @@ const Table = ({ headers, data, lengthChange, searching }) => {
             }
             setTableData(result);
         }
+    }
+
+    const handleEditRow = (rowData) => {
+        onRowEdit(rowData);
+    }
+
+    const handleDeleteRow = (rowData) => {
+        onRowDelete(rowData);
     }
 
     useEffect(() => {
@@ -193,13 +201,21 @@ const Table = ({ headers, data, lengthChange, searching }) => {
                             <tr key={row.uID} className="bg-white border-b hover:bg-gray-50">
                                 {headers?.map((column) => {
                                     if (column.key === 'edit') {
-                                        return <td className="px-6 py-4 text-right" key={row.uID + column.key}>
+                                        return <td
+                                            className="px-6 py-4 text-right"
+                                            key={row.uID + column.key}
+                                            onClick={() => handleEditRow(row)}
+                                        >
                                             <IconContext.Provider value={{ className: "cursor-pointer", size: 26 }}>
                                                 <CiEdit className="font-medium text-blue-600 hover:underline" />
                                             </IconContext.Provider>
                                         </td>
                                     } else if (column.key === 'delete') {
-                                        return <td className="px-6 py-4 text-right" key={row.uID + column.key}>
+                                        return <td
+                                            className="px-6 py-4 text-right"
+                                            key={row.uID + column.key}
+                                            onClick={() => handleDeleteRow(row)}
+                                        >
                                             <IconContext.Provider value={{ className: "cursor-pointer", size: 26 }}>
                                                 <CiTrash className="font-medium text-red-600 hover:underline" />
                                             </IconContext.Provider>
@@ -217,36 +233,36 @@ const Table = ({ headers, data, lengthChange, searching }) => {
                     </tbody>
                 </table>
                 {!searchError && (<>
-                <div className='my-2'>
-                    {lengthChange && (
-                        <div className="flex justify-between">
-                            <div
-                                ref={lengthBoxRef}
-                                tabIndex={0}
-                                className='border border-gray-300 focus:ring-1 focus:ring-primary_color focus:outline-none focus:border-transparent w-14 mx-4 my-2 px-2 py-1 inline-flex gap-1 justify-center items-center rounded-md text-primary_color cursor-pointer'
-                                onClick={toggleLengthChange}>
-                                <span>{selectedLength}</span>
-                                {!showLength && <span>{<MdOutlineKeyboardArrowDown />}</span>}
-                                {showLength && <span>{<MdOutlineKeyboardArrowUp />}</span>}
+                    <div className='my-2'>
+                        {lengthChange && (
+                            <div className="flex justify-between">
+                                <div
+                                    ref={lengthBoxRef}
+                                    tabIndex={0}
+                                    className='border border-gray-300 focus:ring-1 focus:ring-primary_color focus:outline-none focus:border-transparent w-14 mx-4 my-2 px-2 py-1 inline-flex gap-1 justify-center items-center rounded-md text-primary_color cursor-pointer'
+                                    onClick={toggleLengthChange}>
+                                    <span>{selectedLength}</span>
+                                    {!showLength && <span>{<MdOutlineKeyboardArrowDown />}</span>}
+                                    {showLength && <span>{<MdOutlineKeyboardArrowUp />}</span>}
+                                </div>
+                                <ul className="flex justify-end mx-4 gap-1">
+                                    {
+                                        pages.map((page, idx) => (
+                                            <li key={idx}>
+                                                <button
+                                                    type="button"
+                                                    className={`px-3 py-1 rounded-md border border-gray-300 focus:border-transparent cursor-pointer ${page === selectedPage ? 'bg-primary_color text-white' : 'text-primary_color'}`}
+                                                    onClick={() => setSelectedPage(page)}
+                                                >
+                                                    {page}
+                                                </button>
+                                            </li>
+                                        ))
+                                    }
+                                </ul>
                             </div>
-                            <ul className="flex justify-end mx-4 gap-1">
-                                {
-                                    pages.map((page, idx) => (
-                                        <li key={idx}>
-                                            <button
-                                                type="button"
-                                                className={`px-3 py-1 rounded-md border border-gray-300 focus:border-transparent cursor-pointer ${page === selectedPage ? 'bg-primary_color text-white' : 'text-primary_color'}`}
-                                                onClick={() => setSelectedPage(page)}
-                                            >
-                                                {page}
-                                            </button>
-                                        </li>
-                                    ))
-                                }
-                            </ul>
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
                 </>)}
             </div>
             {showLength && !searchError && <ul id='length-box' ref={lengthMenu} className='absolute -bottom-[7.2rem] left-4 w-14 py-1 bg-white shadow-xl border border-gray-200 rounded-lg'>
