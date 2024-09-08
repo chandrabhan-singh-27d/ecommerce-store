@@ -1,6 +1,11 @@
 import mongoose, { Schema, model } from "mongoose";
 
 const productModel = new Schema({
+    uID: {
+        type: String,
+        required: true,
+        unique: true
+    },
     name: {
         type: String,
         required: true

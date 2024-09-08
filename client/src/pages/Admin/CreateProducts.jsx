@@ -4,6 +4,8 @@ import AddInput from "@/components/AddInput";
 import Button from "@/components/Button";
 import { useAuth } from "@/context/auth";
 import { customFetch } from "@/utils/fetchUtil";
+import Modal from "@/components/Modal";
+import LoadingPage from "@/components/LoadingPage";
 
 const CreateProducts = () => {
   const API_ENDPOINT = import.meta.env.VITE_API;
@@ -17,7 +19,17 @@ const CreateProducts = () => {
   const [productQuantity, setProductQuantity] = useState("");
   const [shipping, setShipping] = useState("");
   const [valid, setValid] = useState(true);
+  const [loading, setLoading] = useState(false);
 
+  const resetProductsData = () => {
+    setProductImage(null);
+    setProductName("");
+    setProductCategory("");
+    setProductDescription("");
+    setProductPrice("");
+    setProductQuantity("");
+    setShipping("");
+  }
   const shippingOptions = [
     {
       name: "Yes",
@@ -66,6 +78,7 @@ const CreateProducts = () => {
       reqData.append("image", productImage);
       reqData.append("shipping", Boolean(shipping.value));
 
+      setLoading(true);
       const response = await customFetch(url, {
         method: 'POST',
         headers: {
@@ -77,10 +90,15 @@ const CreateProducts = () => {
       const resData = await response.json();
 
       if (resData?.success) {
-        console.log("response", resData)
+        console.log("response", resData);
+        setLoading(false);
+        resetProductsData();
+        alert(resData.message);
       } else throw (resData.message)
     } catch (error) {
       console.log(`Error in creating product::${error}`)
+      alert(`${error}`)
+      setLoading(false);
     }
   }
 
@@ -106,7 +124,15 @@ const CreateProducts = () => {
           }
           <label className="my-3 w-full text-white bg-gradient-to-r from-[#ed0b51] to-[#840260] hover:bg-gradient-to-l focus:ring-1 focus:outline-none focus:ring-[#840260] font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer">
             {productImage?.name || "Upload Product Image"}
-            <input type="file" accept="image/*" className="hidden" onChange={(e) => setProductImage(e.target.files[0])} />
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                setProductImage(e.target.files[0]);
+                setValid(true);
+              }}
+            />
           </label>
           {!valid && <p className="text-red-700 self-start">Product image is required</p>}
           {productImage &&
@@ -157,6 +183,9 @@ const CreateProducts = () => {
           <Button type="submit" parentClassNames="self-end">Submit</Button>
         </div>
       </form>
+      {loading && <Modal>
+        <LoadingPage />
+      </Modal>}
     </>
   )
 }

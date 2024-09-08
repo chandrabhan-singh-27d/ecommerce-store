@@ -2,13 +2,13 @@ import productModel from "#root/models/productModel.js";
 import categoryModel from "#root/models/categoryModel.js";
 import slugify from 'slugify'
 import { readFileSync } from 'fs'
+import { nanoid } from "nanoid";
 
 export const createProductController = async (req, res) => {
     try {
         const { name, description, price, category, quantity } = req.fields;
         const { image } = req.files;
 
-        console.log("checking request fields", req.fields, req.files)
         // Validtions
         switch (true) {
             case !name:
@@ -48,7 +48,22 @@ export const createProductController = async (req, res) => {
 
         const searchedCategory = await categoryModel.findOne({ uID: category }).select('_id');
 
-        const product = new productModel({ ...req.fields, slug: slugify(name), category: searchedCategory });
+        // Check for existing product
+        const existingProduct = await productModel.findOne({ name });
+
+        if (existingProduct) {
+            return res.status(409).send({
+                success: false,
+                message: "Product already exists"
+            })
+        }
+
+        const product = new productModel({ 
+            ...req.fields, 
+            uID: nanoid(),
+            slug: slugify(name), 
+            category: searchedCategory 
+        });
 
         if (image) {
             product.image.data = readFileSync(image.path);
