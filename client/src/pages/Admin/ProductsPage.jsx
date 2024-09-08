@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from "react"
 import CreateProducts from "./CreateProducts"
+import Products from "./Products"
 
 
 const ProductsPage = () => {
@@ -31,6 +32,7 @@ const ProductsPage = () => {
             </ul>
             <div className="mt-4">
                 {selectedTab?.name === 'Add New Product' && <CreateProducts />}
+                {selectedTab?.name === 'Products' && <Products />}
             </div>
         </>
     )

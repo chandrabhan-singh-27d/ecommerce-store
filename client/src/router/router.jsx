@@ -15,6 +15,7 @@ import Orders from '@/pages/User/Orders';
 import UserLogin from '@/pages/Auth/Login';
 import UserRegister from '@/pages/Auth/Register';
 import ProductsPage from '@/pages/Admin/ProductsPage';
+import UpdateProduct from '@/pages/Admin/UpdateProduct';
 
 
 
@@ -74,6 +75,10 @@ const router = createBrowserRouter([
                             {
                                 path: 'product',
                                 element: <ProductsPage />
+                            },
+                            {
+                                path: 'product/:slug',
+                                element: <UpdateProduct />
                             },
                             {
                                 path: 'users',

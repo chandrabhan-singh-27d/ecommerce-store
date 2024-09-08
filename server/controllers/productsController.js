@@ -58,11 +58,11 @@ export const createProductController = async (req, res) => {
             })
         }
 
-        const product = new productModel({ 
-            ...req.fields, 
+        const product = new productModel({
+            ...req.fields,
             uID: nanoid(),
-            slug: slugify(name), 
-            category: searchedCategory 
+            slug: slugify(name),
+            category: searchedCategory
         });
 
         if (image) {
@@ -89,10 +89,14 @@ export const createProductController = async (req, res) => {
 
 export const getAllProductsController = async (req, res) => {
     try {
+        const { limit } = req.params;
         const products = await productModel.find({})
-            .populate('category')
-            .select("-image")
-            .limit(10)
+            .populate({
+                path: 'category',
+                select: 'name -_id'
+            })
+            .select("uID name slug description price image -_id")
+            .limit(limit || 10)
             .sort({ createdAt: -1 });
 
         res.status(200).send({
