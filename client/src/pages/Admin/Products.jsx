@@ -18,7 +18,6 @@ const Products = () => {
 
             setLoading(false);
             if (resData?.success) {
-                console.log("Listed Products", resData);
                 setProducts(resData.products)
             } else throw (resData.message)
         } catch (error) {
@@ -42,18 +41,24 @@ const Products = () => {
     return (
         <>
             {loading && <LoadingPage />}
-            {!loading && products?.map(product => (
-                <Link to={`/admin/dashboard/product/${product.slug}`} key={product.uID}>
-                    <div className="bg-white shadow-lg px-12 py-16 rounded-md">
-                        <img src={convertBufferToBase64(product.image.data.data)} alt={product.name} />
-                        <div>{product.name}</div>
-                        <div>{product.category.name}</div>
-                        <div>{product.description}</div>
-                        <div>{product.price}</div>
-                        <div>{product.quantity}</div>
+            <div className="grid grid-cols-3 gap-4">
+                {!loading && products?.map(product => (
+                    <div key={product.uID} className="bg-white shadow-lg px-12 py-10 rounded-md flex flex-col items-center max-w-xl h-full">
+                        <div className=" overflow-hidden">
+                            <img src={convertBufferToBase64(product.image.data.data)} alt={product.name} className="h-48 w-96 object-contain object-center" />
+                        </div>
+                        <div className="py-2 my-2 flex flex-col gap-2">
+                            <Link to={`/admin/dashboard/product/${product.slug}`}>
+                                <div title="Update Product" className="text-primary_color">{product.name}</div>
+                            </Link>
+                            <div><b>Category: </b>{product.category.name}</div>
+                            <div className="thin max-h-28 overflow-auto"><b>Product Description: </b>{product.description}</div>
+                            <div><b>Price: </b> ₹{product.price} <>{product.shipping ? `(shipping excluded)` : `(shipping included)`}</></div>
+                            <div><b>Quantity Available: </b>{product.quantity}</div>
+                        </div>
                     </div>
-                </Link>
-            ))}
+                ))}
+            </div>
         </>
     )
 }

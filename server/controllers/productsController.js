@@ -95,7 +95,7 @@ export const getAllProductsController = async (req, res) => {
                 path: 'category',
                 select: 'name -_id'
             })
-            .select("uID name slug description price image -_id")
+            .select("uID name slug description price quantity shipping image -_id")
             .limit(limit || 10)
             .sort({ createdAt: -1 });
 

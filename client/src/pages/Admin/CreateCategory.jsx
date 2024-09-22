@@ -173,7 +173,7 @@ const CreateCategory = () => {
     }, [])
 
     return (
-        <div className="w-full mr-4 px-2 overflow-y-auto">
+        <div className="w-full mr-4 px-2 min-h-[70vh] overflow-auto">
             <form onSubmit={handleSubmit} className="flex items-center gap-3">
                 <AddInput
                     inputData={newCategory}

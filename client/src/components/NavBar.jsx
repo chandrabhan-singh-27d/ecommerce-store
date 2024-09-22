@@ -37,24 +37,11 @@ const NavBar = () => {
 
     ];
 
-    /* Close user control dropdown if clicked outside */
-    const handleClickOutside = (e) => {
-        const userButton = document.querySelector('#user-button')
-        if (userButton.contains(e.target)) {
-            // ignore event if clicked on user button/icon
-            return
-        } else if (userControl.current && !userControl.current.contains(e.target)) {
-            // fire if not clicked on user button/icon
-            setIsUserControlOpen(false);
-        }
-    };
-
     useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+        if (isUserControlOpen) {
+            setTimeout(userControl.current?.focus(), 0)
+        }
+    }, [isUserControlOpen]);
 
     const goToHomepage = () => {
         navigateTo('/')
@@ -105,11 +92,12 @@ const NavBar = () => {
                     <>
                         <FaRegHeart className="text-primary_color" />
                         <HiOutlineShoppingBag className="text-primary_color" />
-                        <FaRegUserCircle className="text-primary_color" id="user-button" onClick={() => setIsUserControlOpen(prevState => !prevState)} />
+                        <FaRegUserCircle className="text-primary_color" id="user-button" onClick={() => setIsUserControlOpen(true)}
+                        />
                     </>
                 </IconContext.Provider>
             </div>
-            {isUserControlOpen && <div ref={userControl} className=" bg-white divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-12 right-2">
+            {isUserControlOpen && <div ref={userControl} tabIndex={1} onBlur={() => setIsUserControlOpen(false)} className=" bg-white divide-y divide-gray-100 rounded-lg shadow w-44 absolute top-12 right-2 focus:outline-none">
                 <ul className="py-2 text-sm ">
                     {!auth.user ? (
                         <>
