@@ -122,7 +122,6 @@ export const deleteCategory = async (req, res) => {
     try {
         const { uID } = req.params
 
-        console.log("checking uID", uID)
         const deletedCategory = await categoryModel.findOneAndDelete({ uID }).select("uID name slug -_id");
 
         res.status(200).send({

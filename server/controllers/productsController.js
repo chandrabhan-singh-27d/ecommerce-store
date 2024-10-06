@@ -9,6 +9,7 @@ export const createProductController = async (req, res) => {
         const { name, description, price, category, quantity } = req.fields;
         const { image } = req.files;
 
+        console.log("checking image size", image.size)
         // Validtions
         switch (true) {
             case !name:
@@ -36,7 +37,7 @@ export const createProductController = async (req, res) => {
                     success: false,
                     message: "Quantity is required",
                 })
-            case (!image && image.size > 1000):
+            case (!image || image.size > 1048576):
                 return res.status(500).send({
                     success: false,
                     message: "Image is required and should be less than 1mb",
@@ -93,7 +94,7 @@ export const getAllProductsController = async (req, res) => {
         const products = await productModel.find({})
             .populate({
                 path: 'category',
-                select: 'name -_id'
+                select: 'name uID -_id'
             })
             .select("uID name slug description price quantity shipping image -_id")
             .limit(limit || 10)
@@ -122,9 +123,9 @@ export const getRequestedProductController = async (req, res) => {
         const filteredProduct = await productModel.findOne({ slug: slug })
             .populate({
                 path: 'category',
-                select: 'name -_id'
+                select: 'name uID -_id'
             })
-            .select("uID name slug description price quantity shipping image -_id");
+            .select("uID name description price quantity shipping image -_id");
 
         res.status(200).send({
             success: true,
@@ -141,33 +142,10 @@ export const getRequestedProductController = async (req, res) => {
     }
 }
 
-export const getRequestedProductImageController = async (req, res) => {
-    try {
-        const { pid } = req.params;
-        const filteredProduct = await productModel.findById(pid).select("image");
-
-        if (filteredProduct.image?.data) {
-            res.set("Content-Type", filteredProduct.image.contentType);
-            return res.status(200).send(filteredProduct.image.data)
-        }
-        res.status(200).send({
-            success: true,
-            message: "Can't seem to find image for the requested product"
-        });
-    } catch (error) {
-        console.log(`Error in getting image:: ${error}`);
-        res.status(500).send({
-            success: false,
-            message: "Error in fetching the image of requested product",
-            error
-        })
-    }
-}
-
 export const updateProductController = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { name, slug, description, price, category, quantity, shipping } = req.fields;
+        const { uID } = req.params;
+        const { name, description, price, category, quantity, shipping } = req.fields;
         const { image } = req.files;
 
         // Validtions
@@ -197,7 +175,7 @@ export const updateProductController = async (req, res) => {
                     success: false,
                     message: "Quantity is required",
                 })
-            case (!image && image.size > 1000):
+            case (!image || image.size > 1048576):
                 return res.status(500).send({
                     success: false,
                     message: "Image is required and should be less than 1mb",
@@ -206,24 +184,37 @@ export const updateProductController = async (req, res) => {
             default:
                 break;
         }
-        const updatedProduct = await productModel.findByIdAndUpdate(
-            id,
+
+        const searchedCategory = await categoryModel.findOne({ uID: category }).select('_id');
+
+        const updatedProduct = await productModel.findOneAndUpdate(
+            {
+                uID: uID
+            },
             {
                 ...req.fields,
-                slug: slugify(name)
+                slug: slugify(name),
+                category: searchedCategory
             },
             {
                 new: true
             }
-        ).select("-image").populate('category');
+        ).select("-image").populate({
+            path: 'category',
+            select: 'name uID -_id'
+        });
 
+        console.log("updated", updatedProduct)
         if (image) {
             updatedProduct.image.data = readFileSync(image.path);
             updatedProduct.image.contentType = image.type;
         }
         await updatedProduct.save();
 
-        const requestedProduct = await productModel.findById(id).select("-image").populate('category')
+        const requestedProduct = await productModel.findOne({uID: uID}).select("-image").populate({
+            path: 'category',
+            select: "name uID -_id"
+        })
         res.status(200).send({
             success: true,
             message: "Requested prooduct updated successfully",
@@ -241,12 +232,12 @@ export const updateProductController = async (req, res) => {
 
 export const deleteProductController = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { uID } = req.params;
 
-        const deletedProduct = await productModel.findByIdAndDelete(id).select("-image").populate('category');
+        const deletedProduct = await productModel.findOneAndDelete({uID}).select("-image").populate('category');
 
         res.status(200).send({
-            success: false,
+            success: true,
             message: "Requested Product deleted successfully",
             deletedProduct
         })

@@ -3,7 +3,6 @@ import {
     deleteProductController, 
     getAllProductsController, 
     getRequestedProductController, 
-    getRequestedProductImageController, 
     updateProductController 
 } from "#root/controllers/productsController.js";
 import { isAdmin, requireSignIn } from "#root/middlewares/authMiddleware.js";
@@ -21,13 +20,10 @@ router.get('/products', getAllProductsController)
 // Get Requested Product
 router.get('/get-product/:slug', getRequestedProductController)
 
-// Get image of requested product
-router.get('/get-image/:pid', getRequestedProductImageController)
-
 // Update Requested Product
-router.put('/update-product/:id', requireSignIn, isAdmin, formidable(), updateProductController);
+router.put('/update-product/:uID', requireSignIn, isAdmin, formidable(), updateProductController);
 
 // Delete Product
-router.delete('/delete-product/:id', requireSignIn, isAdmin, deleteProductController)
+router.delete('/delete-product/:uID', requireSignIn, isAdmin, deleteProductController)
 
 export default router;
