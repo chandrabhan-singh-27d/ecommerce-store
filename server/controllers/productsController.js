@@ -120,8 +120,11 @@ export const getRequestedProductController = async (req, res) => {
         const { slug } = req.params;
 
         const filteredProduct = await productModel.findOne({ slug: slug })
-            .populate('category')
-            .select("-image");
+            .populate({
+                path: 'category',
+                select: 'name -_id'
+            })
+            .select("uID name slug description price quantity shipping image -_id");
 
         res.status(200).send({
             success: true,

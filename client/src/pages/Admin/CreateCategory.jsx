@@ -7,9 +7,9 @@ import LoadingPage from "@/components/LoadingPage";
 import Table from "@/components/Table";
 import Modal from "@/components/Modal";
 import { MdClose } from "react-icons/md";
+import { API_ENDPOINT } from "@/config";
 
 const CreateCategory = () => {
-    const API_ENDPOINT = import.meta.env.VITE_API;
     const [auth] = useAuth();
     const [categoryData, setCategoryData] = useState(null);
     const [isTableLoading, setIsTableLoading] = useState(true);

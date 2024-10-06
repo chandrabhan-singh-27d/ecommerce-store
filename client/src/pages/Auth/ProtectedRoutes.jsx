@@ -2,10 +2,10 @@ import { useAuth } from "@/context/auth"
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import LoadingPage from "../../components/LoadingPage";
+import { API_ENDPOINT } from "@/config";
 
 
 const ProtectedRoutes = () => {
-    const API_ENDPOINT = import.meta.env.VITE_API;
     const navigate = useNavigate();
     const currentLocation = useLocation();
     const [ok, setOk] = useState(false);

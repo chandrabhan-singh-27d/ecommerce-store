@@ -1,3 +1,4 @@
+import { API_ENDPOINT } from "@/config";
 import { useAuth } from "@/context/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,9 +15,6 @@ const UserRegister = () => {
     const [auth, setAuth] = useAuth();
 
     const navigateTo = useNavigate();
-
-    /* Address to call api request */
-    const API_ENDPOINT = import.meta.env.VITE_API;
 
     /* Request body object */
     const user = {

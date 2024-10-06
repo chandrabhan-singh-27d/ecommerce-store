@@ -2,9 +2,9 @@ import { useAuth } from "@/context/auth"
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import LoadingPage from "@/components/LoadingPage";
+import { API_ENDPOINT } from "@/config";
 
 const AdminRoutes = () => {
-    const API_ENDPOINT = import.meta.env.VITE_API;
     const [ok, setOk] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();

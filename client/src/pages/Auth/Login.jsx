@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/context/auth";
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINT } from "@/config";
 
 const UserLogin = () => {
     const navigateTo = useNavigate();
@@ -10,12 +11,8 @@ const UserLogin = () => {
     const [newPassword, setNewPassword] = useState("");
     const [securityQuestion, setSecurityQuestion] = useState("");
 
-
     /* Contexts */
     const [auth, setAuth] = useAuth()
-
-    /* Address to call api request */
-    const API_ENDPOINT = import.meta.env.VITE_API;
 
     /* Request body object */
     const user = {

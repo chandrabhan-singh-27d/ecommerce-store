@@ -1,10 +1,9 @@
 import LoadingPage from "@/components/LoadingPage";
-import Table from "@/components/Table"
+import { API_ENDPOINT } from "@/config";
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
 
 const Products = () => {
-    const API_ENDPOINT = import.meta.env.VITE_API
     const [loading, setLoading] = useState(false);
     const [products, setProducts] = useState([]);
 

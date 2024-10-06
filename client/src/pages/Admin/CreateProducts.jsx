@@ -6,9 +6,9 @@ import { useAuth } from "@/context/auth";
 import { customFetch } from "@/utils/fetchUtil";
 import Modal from "@/components/Modal";
 import LoadingPage from "@/components/LoadingPage";
+import { API_ENDPOINT } from "@/config";
 
 const CreateProducts = () => {
-  const API_ENDPOINT = import.meta.env.VITE_API;
   const [auth] = useAuth();
   const [categories, setCategories] = useState([]);
   const [productImage, setProductImage] = useState(null);
