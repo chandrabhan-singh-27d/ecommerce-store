@@ -9,7 +9,6 @@ export const createProductController = async (req, res) => {
         const { name, description, price, category, quantity } = req.fields;
         const { image } = req.files;
 
-        console.log("checking image size", image.size)
         // Validtions
         switch (true) {
             case !name:
@@ -204,7 +203,6 @@ export const updateProductController = async (req, res) => {
             select: 'name uID -_id'
         });
 
-        console.log("updated", updatedProduct)
         if (image) {
             updatedProduct.image.data = readFileSync(image.path);
             updatedProduct.image.contentType = image.type;
